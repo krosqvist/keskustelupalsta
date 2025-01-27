@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Uusi keskustelu</title>
+</head>
+
+<body>
+  <h1>Uusi ilmoitus</h1>
+  <form action="/create_conversation" method="post">
+    <p>
+      Otsikko: <br />
+      <input type="text" name="title" />
+    </p>
+    <p>
+      Kategoria: <br />
+      <input type="text" name="category" />
+    </p>
+    <p>
+      Avaus: <br />
+      <textarea name="opening" rows="15", cols="50"></textarea>
+    </p>
+    <input type="submit" value="Luo keskustelu" />
+  </form>
+</body>
+
+</html>
