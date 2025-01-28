@@ -4,14 +4,20 @@ from flask import redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
-import items
+import conversations
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_conversations = conversations.get_conversations()
+    return render_template("index.html", conversations=all_conversations)
+
+@app.route("/conversation/<int:conversation_id>")
+def show_conversation(conversation_id):
+    conversation = conversations.get_conversation(conversation_id)
+    return render_template("show_conversation.html", conversation=conversation)
 
 @app.route("/new_conversation")
 def new_conversation():
@@ -24,7 +30,7 @@ def create_conversation():
     opening = request.form["opening"]
     user_id = session["user_id"]
 
-    items.add_item(title, category, opening, user_id)
+    conversations.add_conversation(title, category, opening, user_id)
     return redirect("/")
 
 @app.route("/register")
