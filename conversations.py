@@ -1,5 +1,6 @@
 import db
 from datetime import datetime
+from flask import g
 
 def add_timestamp():
     now = datetime.now()
@@ -9,6 +10,7 @@ def add_timestamp():
 def add_conversation(title, category, opening, user_id):
     sql = "INSERT INTO conversations (title, category, opening, user_id, modification_time) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [title, category, opening, user_id, add_timestamp()])
+    return g.last_insert_id
 
 def get_conversations():
     sql = "SELECT id, title FROM conversations ORDER BY id DESC"
@@ -25,3 +27,7 @@ def update_conversation(conversation_id, title, category, opening):
     sql = """UPDATE conversations SET title = ?, category = ?, opening = ?, modification_time = ?
           WHERE id = ?"""
     db.execute(sql, [title, category, opening, add_timestamp(), conversation_id])
+
+def delete_conversation(conversation_id):
+    sql = "DELETE FROM conversations WHERE id = ?"
+    db.execute(sql, [conversation_id])

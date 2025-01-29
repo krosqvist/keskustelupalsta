@@ -30,8 +30,8 @@ def create_conversation():
     opening = request.form["opening"]
     user_id = session["user_id"]
 
-    conversations.add_conversation(title, category, opening, user_id)
-    return redirect("/")
+    conversation_id = conversations.add_conversation(title, category, opening, user_id)
+    return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/edit_conversation/<int:conversation_id>")
 def edit_conversation(conversation_id):
@@ -47,6 +47,19 @@ def update_conversation():
 
     conversations.update_conversation(conversation_id, title, category, opening)
     return redirect("/conversation/" + str(conversation_id))
+
+@app.route("/delete_conversation/<int:conversation_id>", methods=["GET", "POST"])
+def delete_conversation(conversation_id):
+    if request.method == "GET":
+        conversation = conversations.get_conversation(conversation_id)
+        return render_template("delete_conversation.html", conversation=conversation)
+
+    if request.method == "POST":
+        if "delete" in request.form:
+            conversations.delete_conversation(conversation_id)
+            return redirect("/")
+        else:
+            return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/register")
 def register():
