@@ -7,11 +7,16 @@
 
 <body>
   <h1>{{ conversation.title }}</h1>
+  {% if session.user_id == conversation.user_id %}
   <p>
-    Starter of the conversation: {{ conversation.username }}
+    <a href="/edit_conversation/{{ conversation.id }}">Muokkaa</a>
+  </p>
+  {% endif %}
+  <p>
+    Keskustelunavaaja: {{ conversation.username }}
   </p>
   <p>
-    Conversation category: {{ conversation.category }}
+    Keskustelun kategoria: {{ conversation.category }}
   </p>
   <p>
     {{ conversation.opening }}

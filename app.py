@@ -33,6 +33,21 @@ def create_conversation():
     conversations.add_conversation(title, category, opening, user_id)
     return redirect("/")
 
+@app.route("/edit_conversation/<int:conversation_id>")
+def edit_conversation(conversation_id):
+    conversation = conversations.get_conversation(conversation_id)
+    return render_template("edit_conversation.html", conversation=conversation)
+
+@app.route("/update_conversation", methods=["POST"])
+def update_conversation():
+    conversation_id = request.form["conversation_id"]
+    title = request.form["title"]
+    category = request.form["category"]
+    opening = request.form["opening"]
+
+    conversations.update_conversation(conversation_id, title, category, opening)
+    return redirect("/conversation/" + str(conversation_id))
+
 @app.route("/register")
 def register():
     return render_template("register.html")
