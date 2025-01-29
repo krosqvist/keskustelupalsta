@@ -9,5 +9,6 @@ CREATE TABLE conversations (
     title TEXT,
     category TEXT,
     opening TEXT,
-    user_id INTEGER REFERENCES users
+    user_id INTEGER REFERENCES users,
+    modification_time TEXT
 );
