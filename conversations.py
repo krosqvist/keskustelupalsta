@@ -31,3 +31,10 @@ def update_conversation(conversation_id, title, category, opening):
 def delete_conversation(conversation_id):
     sql = "DELETE FROM conversations WHERE id = ?"
     db.execute(sql, [conversation_id])
+
+def find_conversations(params):
+    if len(params) == 1:
+        sql = "SELECT * FROM conversations WHERE title LIKE ? ORDER BY id DESC"
+    else:
+        sql = "SELECT * FROM conversations WHERE title LIKE ? AND category = ? ORDER BY id DESC"
+    return db.query(sql, params)

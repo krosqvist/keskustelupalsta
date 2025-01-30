@@ -14,6 +14,19 @@ def index():
     all_conversations = conversations.get_conversations()
     return render_template("index.html", conversations=all_conversations)
 
+@app.route("/find_conversation")
+def find_conversation():
+    query = request.args.get("query")
+    category = request.args.get("category")
+    if query:
+        params = [f"%{query}%"]
+    else:
+        params = ["%%"]
+    if category:
+        params.append(str(category))
+    results = conversations.find_conversations(params)
+    return render_template("find_conversation.html", query=query, category=category, results=results)
+
 @app.route("/conversation/<int:conversation_id>")
 def show_conversation(conversation_id):
     conversation = conversations.get_conversation(conversation_id)

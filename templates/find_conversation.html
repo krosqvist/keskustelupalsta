@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Etsi keskustelu</title>
+</head>
+
+<body>
+  <h1>Etsi keskustelu</h1>
+  {% if session.username %}
+  <p>
+    Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id }}
+  </p>
+  <p>
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+  {% endif %}
+
+  <form action="/find_conversation" method="get">
+    <p>
+      Hakusana: <input type="text" name="query" value="{{ query or '' }}">
+    </p>
+    <p>
+      Kategoria:
+      <select name="category">
+        <option value=""></option>
+        <option value="category1" {% if category == "category1" %}selected{% endif %}>Category 1</option>
+        <option value="category2" {% if category == "category2" %}selected{% endif %}>Category 2</option>
+        <option value="category3" {% if category == "category3" %}selected{% endif %}>Category 3</option>
+        <option value="category4" {% if category == "category4" %}selected{% endif %}>Category 4</option>
+      </select>
+    </p>
+    <input type="submit" value="Hae">
+  </form>
+
+  <p>
+    <a href="/">Takaisin</a>
+  </p>
+
+  {% if query or category %}
+  <h2>Tulokset</h2>
+  <ul>
+    {% for conversation in results %}
+      <li>
+        <a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</body>
+
+</html>
