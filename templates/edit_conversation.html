@@ -10,7 +10,7 @@
   <form action="/update_conversation" method="post">
     <p>
       Otsikko: <br />
-      <input type="text" name="title" value="{{ conversation.title }}"/>
+      <input type="text" name="title" value="{{ conversation.title }}" maxlength="100" required/>
     </p>
     <p>
       Kategoria: <br />
@@ -23,7 +23,7 @@
     </p>
     <p>
       Avaus: <br />
-      <textarea name="opening" rows="15", cols="50">{{ conversation.opening }}</textarea>
+      <textarea name="opening" rows="15", cols="50" maxlength="1000" required>{{ conversation.opening }}</textarea>
     </p>
     <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
     <input type="submit" value="Muokkaa keskustelunavausta" />

@@ -47,8 +47,12 @@ def new_conversation():
 def create_conversation():
     require_login()
     title = request.form["title"]
+    if not title or len(title) > 100:
+        abort(403)
     category = request.form["category"]
     opening = request.form["opening"]
+    if not opening or len(opening) > 1000:
+        abort(403)
     user_id = session["user_id"]
 
     conversation_id = conversations.add_conversation(title, category, opening, user_id)
@@ -74,8 +78,12 @@ def update_conversation():
     if conversation["user_id"] != session["user_id"]:
         abort(403)
     title = request.form["title"]
+    if not title or len(title) > 100:
+        abort(403)
     category = request.form["category"]
     opening = request.form["opening"]
+    if not opening or len(opening) > 1000:
+        abort(403)
 
     conversations.update_conversation(conversation_id, title, category, opening)
     return redirect("/conversation/" + str(conversation_id))

@@ -10,7 +10,7 @@
   <form action="/create_conversation" method="post">
     <p>
       Otsikko: <br />
-      <input type="text" name="title" />
+      <input type="text" name="title" maxlength="100" required/>
     </p>
     <p>
       Kategoria: <br />
@@ -23,7 +23,7 @@
     </p>
     <p>
       Avaus: <br />
-      <textarea name="opening" rows="15", cols="50"></textarea>
+      <textarea name="opening" rows="15", cols="50" maxlength="1000" required></textarea>
     </p>
     <input type="submit" value="Luo keskustelu" />
   </form>
