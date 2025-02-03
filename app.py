@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
@@ -49,11 +49,16 @@ def create_conversation():
 @app.route("/edit_conversation/<int:conversation_id>")
 def edit_conversation(conversation_id):
     conversation = conversations.get_conversation(conversation_id)
+    if conversation["user_id"] != session["user_id"]:
+        abort(403)
     return render_template("edit_conversation.html", conversation=conversation)
 
 @app.route("/update_conversation", methods=["POST"])
 def update_conversation():
     conversation_id = request.form["conversation_id"]
+    conversation = conversations.get_conversation(conversation_id)
+    if conversation["user_id"] != session["user_id"]:
+        abort(403)
     title = request.form["title"]
     category = request.form["category"]
     opening = request.form["opening"]
@@ -63,8 +68,10 @@ def update_conversation():
 
 @app.route("/delete_conversation/<int:conversation_id>", methods=["GET", "POST"])
 def delete_conversation(conversation_id):
+    conversation = conversations.get_conversation(conversation_id)
+    if conversation["user_id"] != session["user_id"]:
+        abort(403)
     if request.method == "GET":
-        conversation = conversations.get_conversation(conversation_id)
         return render_template("delete_conversation.html", conversation=conversation)
 
     if request.method == "POST":
