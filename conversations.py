@@ -21,7 +21,8 @@ def get_conversation(conversation_id):
           FROM conversations c, users u
           WHERE u.id = c.user_id AND
           c.id = ?"""
-    return db.query(sql, [conversation_id])[0]
+    result = db.query(sql, [conversation_id])
+    return result[0] if result else None
 
 def update_conversation(conversation_id, title, category, opening):
     sql = """UPDATE conversations SET title = ?, category = ?, opening = ?, modification_time = ?

@@ -9,6 +9,10 @@ import conversations
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     all_conversations = conversations.get_conversations()
@@ -30,14 +34,18 @@ def find_conversation():
 @app.route("/conversation/<int:conversation_id>")
 def show_conversation(conversation_id):
     conversation = conversations.get_conversation(conversation_id)
+    if not conversation:
+        abort(404)
     return render_template("show_conversation.html", conversation=conversation)
 
 @app.route("/new_conversation")
 def new_conversation():
+    require_login()
     return render_template("new_conversation.html")
 
 @app.route("/create_conversation", methods=["POST"])
 def create_conversation():
+    require_login()
     title = request.form["title"]
     category = request.form["category"]
     opening = request.form["opening"]
@@ -48,15 +56,21 @@ def create_conversation():
 
 @app.route("/edit_conversation/<int:conversation_id>")
 def edit_conversation(conversation_id):
+    require_login()
     conversation = conversations.get_conversation(conversation_id)
+    if not conversation:
+        abort(404)
     if conversation["user_id"] != session["user_id"]:
         abort(403)
     return render_template("edit_conversation.html", conversation=conversation)
 
 @app.route("/update_conversation", methods=["POST"])
 def update_conversation():
+    require_login()
     conversation_id = request.form["conversation_id"]
     conversation = conversations.get_conversation(conversation_id)
+    if not conversation:
+        abort(404)
     if conversation["user_id"] != session["user_id"]:
         abort(403)
     title = request.form["title"]
@@ -68,7 +82,10 @@ def update_conversation():
 
 @app.route("/delete_conversation/<int:conversation_id>", methods=["GET", "POST"])
 def delete_conversation(conversation_id):
+    require_login()
     conversation = conversations.get_conversation(conversation_id)
+    if not conversation:
+        abort(404)
     if conversation["user_id"] != session["user_id"]:
         abort(403)
     if request.method == "GET":
@@ -127,6 +144,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
     return redirect("/")
