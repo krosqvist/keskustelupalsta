@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Käyttäjän {{ user.username }} tilastot</title>
+</head>
+
+<body>
+  <h1>Käyttäjän {{ user.username }} tilastot</h1>
+  <p>
+    Käyttäjällä on {{ conversations | count }} keskustelunavausta
+  </p>
+  <h2>Keskustelut</h2>
+  <ul>
+    {% for conversation in conversations %}
+    <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a></li>
+    {% endfor %}
+  </ul>
+  <p>
+    <a href="/">Takaisin</a>
+  </p>
+</body>
+
+</html>

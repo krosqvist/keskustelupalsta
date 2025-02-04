@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
 import conversations
+import users
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -37,6 +38,14 @@ def show_conversation(conversation_id):
     if not conversation:
         abort(404)
     return render_template("show_conversation.html", conversation=conversation)
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    conversations = users.get_conversations(user_id)
+    return render_template("show_user.html", user=user, conversations=conversations)
 
 @app.route("/new_conversation")
 def new_conversation():

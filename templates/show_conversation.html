@@ -14,7 +14,7 @@
   </p>
   {% endif %}
   <p>
-    Keskustelunavaaja: {{ conversation.username }}
+    Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a>
   </p>
   <p>
     Keskustelun kategoria: {{ conversation.category }}
