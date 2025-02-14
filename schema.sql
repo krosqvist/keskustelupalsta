@@ -7,8 +7,20 @@ CREATE TABLE users (
 CREATE TABLE conversations (
     id INTEGER PRIMARY KEY,
     title TEXT,
-    category TEXT,
     opening TEXT,
     user_id INTEGER REFERENCES users,
     modification_time TEXT
+);
+
+CREATE TABLE conversation_classes (
+    id INTEGER PRIMARY KEY,
+    conversation_id REFERENCES conversations,
+    title TEXT,
+    value TEXT
+);
+
+CREATE TABLE classes (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    value TEXT
 );

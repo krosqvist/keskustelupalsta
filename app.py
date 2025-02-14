@@ -37,7 +37,8 @@ def show_conversation(conversation_id):
     conversation = conversations.get_conversation(conversation_id)
     if not conversation:
         abort(404)
-    return render_template("show_conversation.html", conversation=conversation)
+    classes = conversations.get_classes(conversation_id)
+    return render_template("show_conversation.html", conversation=conversation, classes=classes)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -50,7 +51,8 @@ def show_user(user_id):
 @app.route("/new_conversation")
 def new_conversation():
     require_login()
-    return render_template("new_conversation.html")
+    classes = conversations.get_all_classes()
+    return render_template("new_conversation.html", classes=classes)
 
 @app.route("/create_conversation", methods=["POST"])
 def create_conversation():
@@ -58,13 +60,19 @@ def create_conversation():
     title = request.form["title"]
     if not title or len(title) > 100:
         abort(403)
-    category = request.form["category"]
     opening = request.form["opening"]
     if not opening or len(opening) > 1000:
         abort(403)
     user_id = session["user_id"]
 
-    conversation_id = conversations.add_conversation(title, category, opening, user_id)
+    classes = []
+    for entry in request.form.getlist("classes"):
+        if entry:
+            parts = entry.split(":")
+            classes.append((parts[0], parts[1]))
+    print(classes)
+
+    conversation_id = conversations.add_conversation(title, opening, user_id, classes)
     return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/edit_conversation/<int:conversation_id>")

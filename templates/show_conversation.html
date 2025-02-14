@@ -17,7 +17,14 @@
     Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a>
   </p>
   <p>
-    Keskustelun kategoria: {{ conversation.category }}
+    {% if classes %}
+    Keskustelun luokitukset:
+    <ul>
+      {% for class in classes %}
+      <li>{{ class.title }}: {{ class.value }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
   </p>
   <p>
     {{ conversation.opening }}
