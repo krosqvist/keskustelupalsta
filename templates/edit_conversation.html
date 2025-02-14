@@ -13,13 +13,22 @@
       <input type="text" name="title" value="{{ conversation.title }}" maxlength="100" required/>
     </p>
     <p>
-      Kategoria: <br />
-      <select name="category" value="{{ conversation.category }}">
-        <option value="category1">Category 1</option>
-        <option value="category2">Category 2</option>
-        <option value="category3">Category 3</option>
-        <option value="category4">Category 4</option>
-      </select>
+      <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+      {% for class in all_classes %}
+      <p>
+        <label for="class{{ class }}">{{ class }}</a>: <br />
+        <select name="classes" id="class{{ class}}">
+          <option value="">(valitse)</option>
+        {% for option in all_classes[class] %}
+          {% if classes[class] == option %}
+          <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+          {% else %}
+          <option value="{{ class }}:{{ option }}">{{ option }}</option>
+          {% endif %}
+        {% endfor %}
+        </select>
+      </p>
+    {% endfor %}
     </p>
     <p>
       Avaus: <br />

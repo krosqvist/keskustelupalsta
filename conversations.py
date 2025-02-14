@@ -11,6 +11,7 @@ def add_conversation(title, opening, user_id, classes):
     db.execute(sql, [title, opening, user_id, add_timestamp()])
 
     conversation_id = db.last_insert_id()
+    print("conversation_id when creating", conversation_id)
     sql = "INSERT INTO conversation_classes (conversation_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes:
         db.execute(sql, [conversation_id, title, value])
@@ -18,8 +19,14 @@ def add_conversation(title, opening, user_id, classes):
     return conversation_id
 
 def get_classes(conversation_id):
-    sql = "SELECT title, value FROM conversation_classes WHERE conversation_id = ?"
-    return db.query(sql, [conversation_id])
+    sql = """SELECT title, value FROM conversation_classes
+          WHERE conversation_id = ? AND id IN (
+          SELECT MAX(id)
+          FROM conversation_classes
+          WHERE conversation_id = ?
+          GROUP BY title
+          )"""
+    return db.query(sql, [conversation_id, conversation_id])
 
 def get_all_classes():
     sql = "SELECT title, value FROM classes ORDER BY id"
@@ -44,10 +51,26 @@ def get_conversation(conversation_id):
     result = db.query(sql, [conversation_id])
     return result[0] if result else None
 
-def update_conversation(conversation_id, title, category, opening):
-    sql = """UPDATE conversations SET title = ?, category = ?, opening = ?, modification_time = ?
+def update_conversation(conversation_id, title, opening, classes):
+    sql = """UPDATE conversations SET title = ?, opening = ?, modification_time = ?
           WHERE id = ?"""
-    db.execute(sql, [title, category, opening, add_timestamp(), conversation_id])
+    db.execute(sql, [title, opening, add_timestamp(), conversation_id])
+
+    before_delete = db.query("SELECT * FROM conversation_classes WHERE conversation_id = ?", [conversation_id])
+    print(f"Rows before DELETE: {before_delete}")
+
+    sql = "DELETE FROM conversation_classes WHERE conversation_id = ?"
+    db.execute(sql, [conversation_id])
+
+    after_delete = db.query("SELECT * FROM conversation_classes WHERE conversation_id = ?", [conversation_id])
+    print(f"Rows after DELETE: {after_delete}")
+
+    sql = "INSERT INTO conversation_classes (conversation_id, title, value) VALUES (?, ?, ?)"
+    print("conversation_id when updating", conversation_id)
+    #sql = "UPDATE conversation_classes SET value = ? WHERE conversation_id = ? AND title = ?"
+    for class_title, class_value in classes:
+        print(f"Inserting: ({conversation_id}, {class_title}, {class_value})")
+        db.execute(sql, [conversation_id, class_title, class_value])
 
 def delete_conversation(conversation_id):
     sql = "DELETE FROM conversations WHERE id = ?"

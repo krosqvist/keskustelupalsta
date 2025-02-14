@@ -38,6 +38,7 @@ def show_conversation(conversation_id):
     if not conversation:
         abort(404)
     classes = conversations.get_classes(conversation_id)
+    print("classes:DDDD", classes[0]["value"])
     return render_template("show_conversation.html", conversation=conversation, classes=classes)
 
 @app.route("/user/<int:user_id>")
@@ -70,7 +71,6 @@ def create_conversation():
         if entry:
             parts = entry.split(":")
             classes.append((parts[0], parts[1]))
-    print(classes)
 
     conversation_id = conversations.add_conversation(title, opening, user_id, classes)
     return redirect("/conversation/" + str(conversation_id))
@@ -83,7 +83,17 @@ def edit_conversation(conversation_id):
         abort(404)
     if conversation["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit_conversation.html", conversation=conversation)
+
+    all_classes = conversations.get_all_classes()
+    classes = {}
+    for my_class in all_classes:
+        classes[my_class] = ""
+    for entry in conversations.get_classes(conversation_id):
+        classes[entry["title"]] = entry["value"]
+
+    print(classes)
+
+    return render_template("edit_conversation.html", conversation=conversation, classes=classes, all_classes=all_classes)
 
 @app.route("/update_conversation", methods=["POST"])
 def update_conversation():
@@ -97,12 +107,19 @@ def update_conversation():
     title = request.form["title"]
     if not title or len(title) > 100:
         abort(403)
-    category = request.form["category"]
     opening = request.form["opening"]
     if not opening or len(opening) > 1000:
         abort(403)
 
-    conversations.update_conversation(conversation_id, title, category, opening)
+    classes = []
+    for entry in request.form.getlist("classes"):
+        if entry:
+            parts = entry.split(":")
+            classes.append((parts[0], parts[1]))
+    
+    print("classes after updating", classes)
+
+    conversations.update_conversation(conversation_id, title, opening, classes)
     return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/delete_conversation/<int:conversation_id>", methods=["GET", "POST"])
