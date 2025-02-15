@@ -38,10 +38,11 @@
     <h2>Kommentit</h2>
     <p>
       {% for comment in comments %}
-        {{ comment.username }} {{comment.modification_time}}
+        <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{comment.modification_time}}
         <p>
           {{comment.comment.replace('\n', '<br>') | safe }}
         </p>
+        </li>
       {% endfor %}
     </p>
     <form action="/create_comment" method="post">

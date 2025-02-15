@@ -84,7 +84,7 @@ def add_comment(comment, conversation_id, user_id):
     db.execute(sql, [comment, conversation_id, user_id, add_timestamp()])
 
 def get_comments(conversation_id):
-    sql = """SELECT c.comment, c.modification_time, u.id, u.username
+    sql = """SELECT c.comment, c.modification_time, c.user_id, u.username
           FROM comments c, users u
           WHERE c.conversation_id = ? AND c.user_id = u.id
           ORDER BY c.id"""
