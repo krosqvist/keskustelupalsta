@@ -38,8 +38,8 @@ def show_conversation(conversation_id):
     if not conversation:
         abort(404)
     classes = conversations.get_classes(conversation_id)
-    print("classes:DDDD", classes[0]["value"])
-    return render_template("show_conversation.html", conversation=conversation, classes=classes)
+    comments = conversations.get_comments(conversation_id)
+    return render_template("show_conversation.html", conversation=conversation, classes=classes, comments=comments)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -66,10 +66,16 @@ def create_conversation():
         abort(403)
     user_id = session["user_id"]
 
+    all_classes = conversations.get_all_classes()
+
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
             parts = entry.split(":")
+            if parts[0] not in all_classes:
+                abort(403)
+            if parts[1] not in all_classes[parts[0]]:
+                abort(403)
             classes.append((parts[0], parts[1]))
 
     conversation_id = conversations.add_conversation(title, opening, user_id, classes)
@@ -91,8 +97,6 @@ def edit_conversation(conversation_id):
     for entry in conversations.get_classes(conversation_id):
         classes[entry["title"]] = entry["value"]
 
-    print(classes)
-
     return render_template("edit_conversation.html", conversation=conversation, classes=classes, all_classes=all_classes)
 
 @app.route("/update_conversation", methods=["POST"])
@@ -111,13 +115,17 @@ def update_conversation():
     if not opening or len(opening) > 1000:
         abort(403)
 
+    all_classes = conversations.get_all_classes()
+
     classes = []
     for entry in request.form.getlist("classes"):
         if entry:
             parts = entry.split(":")
+            if parts[0] not in all_classes:
+                abort(403)
+            if parts[1] not in all_classes[parts[0]]:
+                abort(403)
             classes.append((parts[0], parts[1]))
-    
-    print("classes after updating", classes)
 
     conversations.update_conversation(conversation_id, title, opening, classes)
     return redirect("/conversation/" + str(conversation_id))
@@ -139,6 +147,19 @@ def delete_conversation(conversation_id):
             return redirect("/")
         else:
             return redirect("/conversation/" + str(conversation_id))
+
+@app.route("/create_comment", methods=["POST"])
+def new_comment():
+    require_login()
+    comment = request.form["comment"]
+    if not comment:
+        abort(403)
+    conversation_id = request.form["conversation_id"]
+    if not conversation_id:
+        abort(403)
+    user_id = session["user_id"]
+    conversations.add_comment(comment, conversation_id, user_id)
+    return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/register")
 def register():

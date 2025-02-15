@@ -19,14 +19,8 @@ def add_conversation(title, opening, user_id, classes):
     return conversation_id
 
 def get_classes(conversation_id):
-    sql = """SELECT title, value FROM conversation_classes
-          WHERE conversation_id = ? AND id IN (
-          SELECT MAX(id)
-          FROM conversation_classes
-          WHERE conversation_id = ?
-          GROUP BY title
-          )"""
-    return db.query(sql, [conversation_id, conversation_id])
+    sql = "SELECT title, value FROM conversation_classes WHERE conversation_id = ?"
+    return db.query(sql, [conversation_id])
 
 def get_all_classes():
     sql = "SELECT title, value FROM classes ORDER BY id"
@@ -73,6 +67,8 @@ def update_conversation(conversation_id, title, opening, classes):
         db.execute(sql, [conversation_id, class_title, class_value])
 
 def delete_conversation(conversation_id):
+    sql = "DELETE FROM conversation_classes WHERE conversation_id = ?"
+    db.execute(sql, [conversation_id])
     sql = "DELETE FROM conversations WHERE id = ?"
     db.execute(sql, [conversation_id])
 
@@ -82,3 +78,14 @@ def find_conversations(params):
     else:
         sql = "SELECT id, title FROM conversations WHERE title LIKE ? AND category = ? ORDER BY id DESC"
     return db.query(sql, params)
+
+def add_comment(comment, conversation_id, user_id):
+    sql = "INSERT INTO comments (comment, conversation_id, user_id, modification_time) VALUES (?, ?, ?, ?)"
+    db.execute(sql, [comment, conversation_id, user_id, add_timestamp()])
+
+def get_comments(conversation_id):
+    sql = """SELECT c.comment, c.modification_time, u.id, u.username
+          FROM comments c, users u
+          WHERE c.conversation_id = ? AND c.user_id = u.id
+          ORDER BY c.id"""
+    return db.query(sql, [conversation_id])

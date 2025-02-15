@@ -27,7 +27,7 @@
     {% endif %}
   </p>
   <p>
-    {{ conversation.opening }}
+    {{ conversation.opening.replace('\n', '<br>') | safe }}
   </p>
   <p>
     Viimeksi muokattu: {{ conversation.modification_time }}
@@ -35,6 +35,23 @@
   <p>
     <a href="/">Takaisin</a>
   </p>
+    <h2>Kommentit</h2>
+    <p>
+      {% for comment in comments %}
+        {{ comment.username }} {{comment.modification_time}}
+        <p>
+          {{comment.comment.replace('\n', '<br>') | safe }}
+        </p>
+      {% endfor %}
+    </p>
+    <form action="/create_comment" method="post">
+      Kommentoi: <br />
+      <textarea name="comment" rows="15", cols="50" maxlength="1000" required></textarea>
+      <p>
+        <input type="submit" value="Kommentoi" />
+      </p>
+      <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+    </form>
 </body>
 
 </html>
