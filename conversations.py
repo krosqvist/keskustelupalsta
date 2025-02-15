@@ -69,15 +69,14 @@ def update_conversation(conversation_id, title, opening, classes):
 def delete_conversation(conversation_id):
     sql = "DELETE FROM conversation_classes WHERE conversation_id = ?"
     db.execute(sql, [conversation_id])
+    sql = "DELETE FROM comments WHERE conversation_id = ?"
+    db.execute(sql, [conversation_id])
     sql = "DELETE FROM conversations WHERE id = ?"
     db.execute(sql, [conversation_id])
 
-def find_conversations(params):
-    if len(params) == 1:
-        sql = "SELECT id, title FROM conversations WHERE title LIKE ? ORDER BY id DESC"
-    else:
-        sql = "SELECT id, title FROM conversations WHERE title LIKE ? AND category = ? ORDER BY id DESC"
-    return db.query(sql, params)
+def find_conversations(search):
+    sql = "SELECT id, title FROM conversations WHERE title LIKE ? OR opening LIKE ? ORDER BY id DESC"
+    return db.query(sql, [search, search])
 
 def add_comment(comment, conversation_id, user_id):
     sql = "INSERT INTO comments (comment, conversation_id, user_id, modification_time) VALUES (?, ?, ?, ?)"

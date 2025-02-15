@@ -18,17 +18,10 @@
 
   <form action="/find_conversation" method="get">
     <p>
-      Hakusana: <input type="text" name="query" value="{{ query or '' }}">
+      Hae keskustelun otsikon tai avauksen perusteella.
     </p>
     <p>
-      Kategoria:
-      <select name="category">
-        <option value=""></option>
-        <option value="category1" {% if category == "category1" %}selected{% endif %}>Category 1</option>
-        <option value="category2" {% if category == "category2" %}selected{% endif %}>Category 2</option>
-        <option value="category3" {% if category == "category3" %}selected{% endif %}>Category 3</option>
-        <option value="category4" {% if category == "category4" %}selected{% endif %}>Category 4</option>
-      </select>
+      Hakusana: <input type="text" name="query" value="{{ query or '' }}">
     </p>
     <input type="submit" value="Hae">
   </form>
@@ -37,7 +30,7 @@
     <a href="/">Takaisin</a>
   </p>
 
-  {% if query or category %}
+  {% if query %}
   <h2>Tulokset</h2>
   <ul>
     {% for conversation in results %}
