@@ -27,6 +27,11 @@
     {% endif %}
   </p>
   <p>
+    {% if conversation.image %}
+      <img src="/image/{{ conversation.id }}" />
+    {% endif %}
+  </p>
+  <p>
     {{ conversation.opening.replace('\n', '<br>') | safe }}
   </p>
   <p>
@@ -38,6 +43,7 @@
     <h2>Kommentit</h2>
     <p>
       {% for comment in comments %}
+        <hr />
         <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{comment.modification_time}}
         <p>
           {{comment.comment.replace('\n', '<br>') | safe }}

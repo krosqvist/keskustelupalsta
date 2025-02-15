@@ -6,9 +6,10 @@ def add_timestamp():
     formatted_time = now.strftime("%d.%m.%Y %H:%M:%S")
     return str(formatted_time)
 
-def add_conversation(title, opening, user_id, classes):
-    sql = "INSERT INTO conversations (title, opening, user_id, modification_time) VALUES (?, ?, ?, ?)"
-    db.execute(sql, [title, opening, user_id, add_timestamp()])
+def add_conversation(title, opening, user_id, classes, image):
+    print(image)
+    sql = "INSERT INTO conversations (title, opening, user_id, image, modification_time) VALUES (?, ?, ?, ?, ?)"
+    db.execute(sql, [title, opening, user_id, image, add_timestamp()])
 
     conversation_id = db.last_insert_id()
     print("conversation_id when creating", conversation_id)
@@ -38,7 +39,7 @@ def get_conversations():
     return db.query(sql)
 
 def get_conversation(conversation_id):
-    sql = """SELECT c.id, c.title, c.opening, c.modification_time, u.id user_id, u.username
+    sql = """SELECT c.id, c.title, c.opening, c.modification_time, c.image, u.id user_id, u.username
           FROM conversations c, users u
           WHERE u.id = c.user_id AND
           c.id = ?"""
@@ -88,3 +89,8 @@ def get_comments(conversation_id):
           WHERE c.conversation_id = ? AND c.user_id = u.id
           ORDER BY c.id"""
     return db.query(sql, [conversation_id])
+
+def get_image(conversation_id):
+    sql = "SELECT image FROM conversations WHERE id = ?"
+    result = db.query(sql, [conversation_id])
+    return result[0][0]

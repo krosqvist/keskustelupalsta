@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, redirect, render_template, request, session, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
@@ -63,6 +63,15 @@ def create_conversation():
         abort(403)
     user_id = session["user_id"]
 
+    file = request.files["image"]
+    if file:
+        if not file.filename.endswith(".jpg"):
+            abort(403)
+
+    image = file.read()
+    if len(image) > 100 * 1024:
+        abort(403)
+
     all_classes = conversations.get_all_classes()
 
     classes = []
@@ -75,7 +84,7 @@ def create_conversation():
                 abort(403)
             classes.append((parts[0], parts[1]))
 
-    conversation_id = conversations.add_conversation(title, opening, user_id, classes)
+    conversation_id = conversations.add_conversation(title, opening, user_id, classes, image)
     return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/edit_conversation/<int:conversation_id>")
@@ -144,6 +153,15 @@ def delete_conversation(conversation_id):
             return redirect("/")
         else:
             return redirect("/conversation/" + str(conversation_id))
+
+@app.route("/image/<int:conversation_id>")
+def show_image(conversation_id):
+    image = conversations.get_image(conversation_id)
+    if not image:
+        abort(404)
+    response = make_response(image)
+    response.headers.set("Content-Type", "image/jpeg")
+    return response
 
 @app.route("/create_comment", methods=["POST"])
 def new_comment():

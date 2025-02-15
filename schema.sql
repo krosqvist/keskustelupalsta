@@ -9,7 +9,8 @@ CREATE TABLE conversations (
     title TEXT,
     opening TEXT,
     user_id INTEGER REFERENCES users,
-    modification_time TEXT
+    modification_time TEXT,
+    image BLOB
 );
 
 CREATE TABLE conversation_classes (
@@ -31,5 +32,6 @@ CREATE TABLE comments (
     conversation_id INTEGER REFERENCES conversations,
     user_id INTEGER REFERENCES users,
     comment TEXT,
-    modification_time TEXT
+    modification_time TEXT,
+    image BLOB
 );
