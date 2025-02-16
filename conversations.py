@@ -46,23 +46,15 @@ def get_conversation(conversation_id):
     result = db.query(sql, [conversation_id])
     return result[0] if result else None
 
-def update_conversation(conversation_id, title, opening, classes):
-    sql = """UPDATE conversations SET title = ?, opening = ?, modification_time = ?
+def update_conversation(conversation_id, title, opening, classes, image):
+    sql = """UPDATE conversations SET title = ?, opening = ?, image = ?, modification_time = ?
           WHERE id = ?"""
-    db.execute(sql, [title, opening, add_timestamp(), conversation_id])
-
-    before_delete = db.query("SELECT * FROM conversation_classes WHERE conversation_id = ?", [conversation_id])
-    print(f"Rows before DELETE: {before_delete}")
+    db.execute(sql, [title, opening, image, add_timestamp(), conversation_id])
 
     sql = "DELETE FROM conversation_classes WHERE conversation_id = ?"
     db.execute(sql, [conversation_id])
 
-    after_delete = db.query("SELECT * FROM conversation_classes WHERE conversation_id = ?", [conversation_id])
-    print(f"Rows after DELETE: {after_delete}")
-
     sql = "INSERT INTO conversation_classes (conversation_id, title, value) VALUES (?, ?, ?)"
-    print("conversation_id when updating", conversation_id)
-    #sql = "UPDATE conversation_classes SET value = ? WHERE conversation_id = ? AND title = ?"
     for class_title, class_value in classes:
         print(f"Inserting: ({conversation_id}, {class_title}, {class_value})")
         db.execute(sql, [conversation_id, class_title, class_value])
@@ -84,11 +76,20 @@ def add_comment(comment, conversation_id, user_id):
     db.execute(sql, [comment, conversation_id, user_id, add_timestamp()])
 
 def get_comments(conversation_id):
-    sql = """SELECT c.comment, c.modification_time, c.user_id, u.username
+    sql = """SELECT c.id, c.comment, c.modification_time, c.user_id, u.username
           FROM comments c, users u
           WHERE c.conversation_id = ? AND c.user_id = u.id
           ORDER BY c.id"""
     return db.query(sql, [conversation_id])
+
+def check_comment(comment_id):
+    sql = "SELECT id, conversation_id, user_id FROM comments WHERE id = ?"
+    result = db.query(sql, [comment_id])
+    return result[0] if result else None
+
+def delete_comment(comment_id):
+    sql = "DELETE FROM comments WHERE id = ?"
+    db.execute(sql, [comment_id])
 
 def get_image(conversation_id):
     sql = "SELECT image FROM conversations WHERE id = ?"

@@ -121,6 +121,15 @@ def update_conversation():
     if not opening or len(opening) > 1000:
         abort(403)
 
+    file = request.files["image"]
+    if file:
+        if not file.filename.endswith(".jpg"):
+            abort(403)
+
+    image = file.read()
+    if len(image) > 100 * 1024:
+        abort(403)
+
     all_classes = conversations.get_all_classes()
 
     classes = []
@@ -133,7 +142,7 @@ def update_conversation():
                 abort(403)
             classes.append((parts[0], parts[1]))
 
-    conversations.update_conversation(conversation_id, title, opening, classes)
+    conversations.update_conversation(conversation_id, title, opening, classes, image)
     return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/delete_conversation/<int:conversation_id>", methods=["GET", "POST"])
@@ -162,6 +171,19 @@ def show_image(conversation_id):
     response = make_response(image)
     response.headers.set("Content-Type", "image/jpeg")
     return response
+
+@app.route("/delete_comment/<int:comment_id>", methods=["POST"])
+def delete_comment(comment_id):
+    require_login()
+    comment = conversations.check_comment(comment_id)
+    conversation_id = request.form["conversation_id"]
+    print("conversation_id:", conversation_id)
+    if comment["user_id"] != session["user_id"]:
+        abort(403)
+    if not comment:
+        abort(404)
+    conversations.delete_comment(comment_id)
+    return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/create_comment", methods=["POST"])
 def new_comment():

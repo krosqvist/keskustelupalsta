@@ -47,10 +47,17 @@
         <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{comment.modification_time}}
         <p>
           {{comment.comment.replace('\n', '<br>') | safe }}
+          {% if session.user_id == comment.user_id %}
+          <form action="/delete_comment/{{ comment.id }}" method="post">
+            <input type="submit" name="delete" value="Poista" />
+            <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+          </form>
+          {% endif %}
         </p>
         </li>
       {% endfor %}
     </p>
+    {% if session.user_id %}
     <form action="/create_comment" method="post">
       Kommentoi: <br />
       <textarea name="comment" rows="15", cols="50" maxlength="1000" required></textarea>
@@ -59,6 +66,7 @@
       </p>
       <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
     </form>
+    {% endif %}
 </body>
 
 </html>
