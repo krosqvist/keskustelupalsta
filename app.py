@@ -21,13 +21,36 @@ def index():
 
 @app.route("/find_conversation")
 def find_conversation():
+    classes = conversations.get_all_classes()
     query = request.args.get("query")
     if query:
         search = f"%{query}%"
     else:
         search = "%%"
-    results = conversations.find_conversations(search)
-    return render_template("find_conversation.html", query=query, results=results)
+
+    my_classes = []
+    for entry in request.args.getlist("classes"):
+        if entry:
+            parts = entry.split(":")
+            if parts[0] not in classes:
+                abort(403)
+            if parts[1] not in classes[parts[0]]:
+                abort(403)
+            my_classes.append((parts[0], parts[1]))
+
+    results = conversations.find_conversations(search, my_classes)
+    selected_classes = [f"{class_name}:{class_value}" for class_name, class_value in my_classes]
+    return render_template("find_conversation.html", query=query, results=results, classes=classes, selected_classes=selected_classes)
+
+@app.route("/find_user")
+def find_user():
+    query = request.args.get("query")
+    if query:
+        search = f"%{query}%"
+    else:
+        search = "%%"
+    results = users.find_users(search)
+    return render_template("find_user.html", query=query, results=results)
 
 @app.route("/conversation/<int:conversation_id>")
 def show_conversation(conversation_id):

@@ -67,9 +67,41 @@ def delete_conversation(conversation_id):
     sql = "DELETE FROM conversations WHERE id = ?"
     db.execute(sql, [conversation_id])
 
-def find_conversations(search):
-    sql = "SELECT id, title FROM conversations WHERE title LIKE ? OR opening LIKE ? ORDER BY id DESC"
-    return db.query(sql, [search, search])
+def find_conversations(search, my_classes):
+    parameters = [search, search]
+
+    sql = """SELECT c.id, c.title
+             FROM conversations c
+             JOIN conversation_classes cc ON c.id = cc.conversation_id
+             WHERE (c.title LIKE ? OR c.opening LIKE ?)"""
+
+    if my_classes:
+        class_conditions = []
+        for class_title, class_value in my_classes:
+            class_conditions.append("cc.title = ? AND cc.value = ?")
+            parameters.append(class_title)
+            parameters.append(class_value)
+
+        if class_conditions:
+            sql += " AND (" + " OR ".join(class_conditions) + ")"
+
+    if not my_classes:
+        sql = """SELECT c.id, c.title
+                 FROM conversations c
+                 WHERE (c.title LIKE ? OR c.opening LIKE ?)"""
+
+    if my_classes:
+        sql += """ GROUP BY c.id
+                   HAVING COUNT(DISTINCT cc.title || cc.value) = ?  -- Ensure all selected classes are matched
+                   ORDER BY c.id DESC"""
+        parameters.append(len(my_classes))
+
+    else:
+        sql += " ORDER BY c.id DESC"
+
+    return db.query(sql, parameters)
+
+
 
 def add_comment(comment, conversation_id, user_id):
     sql = "INSERT INTO comments (comment, conversation_id, user_id, modification_time) VALUES (?, ?, ?, ?)"

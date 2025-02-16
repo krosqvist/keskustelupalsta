@@ -9,3 +9,7 @@ def get_conversations(user_id):
     sql = "SELECT id, title FROM conversations WHERE user_id = ? ORDER BY id DESC"
     result = db.query(sql, [user_id])
     return result if result else ""
+
+def find_users(search):
+    sql = "SELECT id, username FROM users WHERE username LIKE ? ORDER BY username"
+    return db.query(sql, [search])

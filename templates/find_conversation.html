@@ -23,6 +23,24 @@
     <p>
       Hakusana: <input type="text" name="query" value="{{ query or '' }}">
     </p>
+    <p>
+      {% for class, options in classes.items() %}
+        <p>
+          {{ class }}: <br />
+          <select name="classes">
+            <option value=""></option>
+            {% for option in options %}
+              <option value="{{ class }}:{{ option }}"
+                      {% if class + ':' + option in selected_classes %}
+                          selected
+                      {% endif %}>
+                {{ option }}
+              </option>
+            {% endfor %}
+          </select>
+        </p>
+      {% endfor %}
+    </p>
     <input type="submit" value="Hae">
   </form>
 
@@ -30,7 +48,6 @@
     <a href="/">Takaisin</a>
   </p>
 
-  {% if query %}
   <h2>Tulokset</h2>
   <ul>
     {% for conversation in results %}
@@ -39,7 +56,6 @@
       </li>
     {% endfor %}
   </ul>
-  {% endif %}
 </body>
 
 </html>
