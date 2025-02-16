@@ -13,3 +13,7 @@ def get_conversations(user_id):
 def find_users(search):
     sql = "SELECT id, username FROM users WHERE username LIKE ? ORDER BY username"
     return db.query(sql, [search])
+
+def get_comments(user_id):
+    sql = "SELECT id, conversation_id, comment, modification_time FROM comments WHERE user_id = ? ORDER BY id DESC"
+    return db.query(sql, [user_id])

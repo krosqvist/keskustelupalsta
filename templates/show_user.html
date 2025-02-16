@@ -8,12 +8,18 @@
 <body>
   <h1>Käyttäjän {{ user.username }} tilastot</h1>
   <p>
-    Käyttäjällä on {{ conversations | count }} keskustelunavausta
+    Käyttäjällä on {{ conversations | count }} keskustelunavausta ja {{comments | count}} kommenttia keskusteluissa
   </p>
-  <h2>Keskustelut</h2>
+  <h2>Keskustelunavaukset</h2>
   <ul>
     {% for conversation in conversations %}
     <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>Kommentit</h2>
+  <ul>
+    {% for comment in comments %}
+    <li><a href="/conversation/{{ comment.conversation_id }}">{{ comment.comment }}</a> {{comment.modification_time}} </li>
     {% endfor %}
   </ul>
   <p>
