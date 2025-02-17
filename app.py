@@ -150,9 +150,15 @@ def update_conversation():
         if not file.filename.endswith(".jpg"):
             abort(403)
 
-    image = file.read()
-    if len(image) > 100 * 1024:
-        abort(403)
+        image = file.read()
+        if len(image) > 100 * 1024:
+            abort(403)
+    else:
+        image = conversation["image"]
+
+    remove_image = request.form.get("delete_image")
+    if remove_image == "1":
+        image = None
 
     all_classes = conversations.get_all_classes()
 

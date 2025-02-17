@@ -35,8 +35,21 @@
       <textarea name="opening" rows="15", cols="50" maxlength="1000" required>{{ conversation.opening }}</textarea>
     </p>
     <p>
-      Kuva (max 100KB):
+      {% if conversation.image %}
+      <img src="/image/{{ conversation.id }}" alt="Nykyinen kuva"/> <br />
+        <label>
+          <input type="checkbox" name="delete_image" value="1"> Poista nykyinen kuva
+        </label>
+      {% else %}
+        <p>Ei nykyistä kuvaa.</p>
+      {% endif %}
+    </p>
+    <p>
+      Lataa uusi kuva (max 100KB):
       <input type="file" name="image" accept=".jpg" />
+    </p>
+    <p>
+      Jätä tyhjäksi poistaaksesi kuvan
     </p>
     <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
     <input type="submit" value="Muokkaa keskustelunavausta" />
