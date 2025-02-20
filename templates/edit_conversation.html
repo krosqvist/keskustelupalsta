@@ -29,11 +29,11 @@
   </p>
   <p>
     Avaus: <br />
-    <textarea name="opening" rows="15", cols="50" maxlength="1000" required>{{ conversation.opening }}</textarea>
+    <textarea name="opening" rows="15", cols="100" maxlength="5000" required>{{ conversation.opening }}</textarea>
   </p>
   <p>
     {% if conversation.image %}
-    <img src="/image/{{ conversation.id }}" alt="Nykyinen kuva"/> <br />
+    <img src="/image/{{ conversation.id }}" alt="Nykyinen kuva" style="max-width:750px; max-height:750px;"/> <br />
       <label>
         <input type="checkbox" name="delete_image" value="1"> Poista nykyinen kuva
       </label>

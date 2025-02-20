@@ -95,7 +95,7 @@ def create_conversation():
         flash("Otsikon täytyy alkaa kirjaimella!")
         return redirect("/new_conversation")
     opening = request.form["opening"]
-    if not opening or len(opening) > 1000:
+    if not opening or len(opening) > 5000:
         flash("Avaus on liian pitkä!")
         return redirect("/new_conversation")
     user_id = session["user_id"]
@@ -161,7 +161,7 @@ def update_conversation():
         flash("Otsikon täytyy alkaa kirjaimella!")
         return redirect("/edit_conversation/" + str(conversation_id))
     opening = request.form["opening"]
-    if not opening or len(opening) > 1000:
+    if not opening or len(opening) > 5000:
         flash("Avaus on liian pitkä!")
         return redirect("/edit_conversation/" + str(conversation_id))
 
@@ -242,6 +242,9 @@ def new_comment():
     comment = request.form["comment"]
     if not comment:
         abort(403)
+    if len(comment) > 5000:
+        flash("Kommentti on yli 5000 merkkiä!")
+        return redirect("/conversation/" + str(conversation_id))
     conversation_id = request.form["conversation_id"]
     if not conversation_id:
         abort(403)

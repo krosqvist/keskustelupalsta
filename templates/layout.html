@@ -7,7 +7,10 @@
 </head>
 
 <body>
+  <div class="header">
   <h1>Keskustelupalsta</h1>
+  </div>
+  <div class="nav">
   {% if session.username %}
   <p>
     Olet kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
@@ -25,7 +28,7 @@
   <a href="/find_user">Etsi käyttäjiä</a> |
   <a href="/">Etusivulle</a> |
   </p>
-  <hr />
+  </div>
 
   {% block content %}{% endblock %}
 </body>

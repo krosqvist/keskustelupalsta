@@ -4,14 +4,6 @@
 
 {% block content %}
 <h2>Etsi keskustelu</h2>
-{% if session.username %}
-<p>
-  Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id }}
-</p>
-<p>
-  <a href="/logout">Kirjaudu ulos</a>
-</p>
-{% endif %}
 
 <form action="/find_conversation" method="get">
   <p>

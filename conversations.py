@@ -94,7 +94,7 @@ def find_conversations(search, my_classes):
 
     if my_classes:
         sql += """ GROUP BY c.id
-                   HAVING COUNT(DISTINCT cc.title || cc.value) = ?  -- Ensure all selected classes are matched
+                   HAVING COUNT(DISTINCT cc.title || cc.value) = ?
                    ORDER BY c.id DESC"""
         parameters.append(len(my_classes))
 

@@ -1,12 +1,40 @@
 body {
     margin: auto;
-    max-width: 75em;
+    max-width: 50em;
     font-family: sans-serif;
     background-color: rgb(130, 230, 168);
 }
 
+.header {
+    background-color: black;
+    color: rgb(130, 230, 168);
+    padding: 1em;
+    margin: auto;
+    max-width: 75em;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+  .nav {
+    background-color: lightgrey;
+    padding: 1em;
+    margin: auto;
+    text-align: center;
+  }
+
 .conversation {
+    background-color: white;
     border: 2px solid black;
     margin: 1em;
     padding: 0.2em;    
+}
+
+.opening {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 2000px;
+    background-color: white;
+    border: 2px solid black;
+    margin: 1em;
+    padding: 0.2em;
 }

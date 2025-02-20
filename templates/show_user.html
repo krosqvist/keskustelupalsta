@@ -5,18 +5,24 @@
 {% block content %}
 <h2>Käyttäjän {{ user.username }} tilastot</h2>
 <p>
+  <div class="conversation">
   Käyttäjällä on {{ conversations | count }} keskustelunavausta ja {{comments | count}} kommenttia keskusteluissa
+  </div>
 </p>
 <h2>Keskustelunavaukset</h2>
 <ul>
+  <div class="conversation">
   {% for conversation in conversations %}
   <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} </li>
   {% endfor %}
+  </div>
 </ul>
 <h2>Kommentit</h2>
 <ul>
+  <div class="opening">
   {% for comment in comments %}
-  <li><a style="white-space: pre-wrap; word-wrap: break-word; max-width: 600px;" href="/conversation/{{ comment.conversation_id }}">{{ comment.comment }}</a> {{comment.modification_time}} </li>
+  <li><a href="/conversation/{{ comment.conversation_id }}">{{ comment.comment }}</a> {{comment.modification_time}} </li>
   {% endfor %}
+  </div>
 </ul>
 {% endblock %}

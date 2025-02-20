@@ -3,7 +3,7 @@
 {% block title %}Keskustelupalsta{% endblock %}
 
 {% block content %}
-<h2>Keskustelut</h2>
+<h2>Tuoreimmat keskustelut</h2>
 {% for conversation in conversations %}
 <div class="conversation">
 <a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} <br />
@@ -11,5 +11,4 @@ Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.us
 Kommentteja: {{ conversation.comments }}
 </div>
 {% endfor %}
-
 {% endblock %}
