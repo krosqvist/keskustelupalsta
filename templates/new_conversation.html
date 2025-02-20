@@ -13,6 +13,7 @@
   <p>
     {{ class }}: <br />
     <select name="classes">
+      <option value="">(valitse)</option>
     {% for option in classes[class] %}
       <option value="{{ class }}:{{ option }}">{{ option }}</option>
     {% endfor %}
@@ -24,9 +25,14 @@
     <textarea name="opening" rows="15", cols="50" maxlength="1000" required></textarea>
   </p>
     <p>
-      Kuva (max 100KB):
+      Kuva (max 100KB, jpg):
       <input type="file" name="image" accept=".jpg" />
     </p>
   <input type="submit" value="Luo keskustelu" />
 </form>
+{% for message in get_flashed_messages() %}
+<p>
+  <b>{{ message }}</b>
+</p>
+{% endfor %}
 {% endblock %}

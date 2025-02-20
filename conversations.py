@@ -33,7 +33,12 @@ def get_all_classes():
     return classes
 
 def get_conversations():
-    sql = "SELECT id, title FROM conversations ORDER BY id DESC"
+    sql = """SELECT c.id, c.title, c.user_id, c.modification_time, COUNT(co.id) comments, u.username, MAX(co.id)
+          FROM conversations c, users u
+          LEFT JOIN comments co ON c.id = co.conversation_id
+          WHERE c.user_id = u.id 
+          GROUP BY c.id, c.title, u.username
+          ORDER BY MAX(co.id) DESC"""
     return db.query(sql)
 
 def get_conversation(conversation_id):

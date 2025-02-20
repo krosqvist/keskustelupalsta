@@ -51,4 +51,9 @@
   <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
   <input type="submit" value="Muokkaa keskustelunavausta" />
 </form>
+{% for message in get_flashed_messages() %}
+<p>
+  <b>{{ message }}</b>
+</p>
+{% endfor %}
 {% endblock %}

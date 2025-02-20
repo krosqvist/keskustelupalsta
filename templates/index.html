@@ -4,9 +4,12 @@
 
 {% block content %}
 <h2>Keskustelut</h2>
-<ul>
-  {% for conversation in conversations %}
-  <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a></li>
-  {% endfor %}
-</ul>
+{% for conversation in conversations %}
+<div class="conversation">
+<a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} <br />
+Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a> <br />
+Kommentteja: {{ conversation.comments }}
+</div>
+{% endfor %}
+
 {% endblock %}

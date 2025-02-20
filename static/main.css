@@ -1,0 +1,12 @@
+body {
+    margin: auto;
+    max-width: 75em;
+    font-family: sans-serif;
+    background-color: rgb(130, 230, 168);
+}
+
+.conversation {
+    border: 2px solid black;
+    margin: 1em;
+    padding: 0.2em;    
+}

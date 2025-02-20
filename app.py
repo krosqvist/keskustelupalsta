@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import abort, redirect, render_template, request, session, make_response
+from flask import abort, redirect, render_template, request, session, make_response, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
@@ -13,11 +13,11 @@ app.secret_key = config.secret_key
 def require_login():
     if "user_id" not in session:
         abort(403)
-
+"""
 @app.errorhandler(404)
 def not_found(e):
     return redirect("/")
-
+"""
 @app.errorhandler(403)
 def not_found(e):
     return render_template("no_permission.html")
@@ -88,21 +88,28 @@ def new_conversation():
 def create_conversation():
     require_login()
     title = request.form["title"]
-    if not title or len(title) > 100:
-        abort(403)
+    if len(title) > 100:
+        flash("Otsikko on liian pitkä!")
+        return redirect("/new_conversation")
+    if not title or title.startswith(" "):
+        flash("Otsikon täytyy alkaa kirjaimella!")
+        return redirect("/new_conversation")
     opening = request.form["opening"]
     if not opening or len(opening) > 1000:
-        abort(403)
+        flash("Avaus on liian pitkä!")
+        return redirect("/new_conversation")
     user_id = session["user_id"]
 
     file = request.files["image"]
     if file:
         if not file.filename.endswith(".jpg"):
-            abort(403)
+            flash("Virheellinen tiedostomuoto!")
+            return redirect("/new_conversation")
 
     image = file.read()
     if len(image) > 100 * 1024:
-        abort(403)
+        flash("Liian suuri tiedosto!")
+        return redirect("/new_conversation")
 
     all_classes = conversations.get_all_classes()
 
@@ -147,20 +154,27 @@ def update_conversation():
     if conversation["user_id"] != session["user_id"]:
         abort(403)
     title = request.form["title"]
-    if not title or len(title) > 100:
-        abort(403)
+    if len(title) > 100:
+        flash("Otsikko on liian pitkä!")
+        return redirect("/edit_conversation/" + str(conversation_id))
+    if not title or title.startswith(" "):
+        flash("Otsikon täytyy alkaa kirjaimella!")
+        return redirect("/edit_conversation/" + str(conversation_id))
     opening = request.form["opening"]
     if not opening or len(opening) > 1000:
-        abort(403)
+        flash("Avaus on liian pitkä!")
+        return redirect("/edit_conversation/" + str(conversation_id))
 
     file = request.files["image"]
     if file:
         if not file.filename.endswith(".jpg"):
-            abort(403)
+            flash("Virheellinen tiedostomuoto!")
+            return redirect("/edit_conversation/" + str(conversation_id))
 
         image = file.read()
         if len(image) > 100 * 1024:
-            abort(403)
+            flash("Liian suuri tiedostokoko!")
+            return redirect("/edit_conversation/" + str(conversation_id))
     else:
         image = conversation["image"]
 
@@ -242,17 +256,25 @@ def register():
 @app.route("/create", methods=["POST"])
 def create():
         username = request.form["username"]
+        if not username or len(username) < 3 or len(username) > 20:
+            flash("Käyttäjänimen pituus täytyy olla 3-20 merkkiä!")
+            return redirect("/register")
         password1 = request.form["password1"]
+        if not password1 or len(password1) < 3:
+            flash("Salasanan täytyy olla vähintään 3 merkkiä!")
+            return redirect("/register")
         password2 = request.form["password2"]
         if password1 != password2:
-            return render_template("account.html", message="VIRHE: salasanat eivät ole samat")
+            flash("Salasanat eivät täsmää!")
+            return redirect("/register")
         password_hash = generate_password_hash(password1)
 
         try:
             sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
             db.execute(sql, [username, password_hash])
         except sqlite3.IntegrityError:
-            return render_template("account.html", message="VIRHE: tunnus on jo varattu")
+            flash("Käyttäjätunnus on jo käytössä!")
+            return redirect("/register")
 
         return render_template("account.html", message="Tunnus luotu")
 
@@ -271,13 +293,15 @@ def login():
             user_id = result["id"]
             password_hash = result["password_hash"]
         except:
-            return render_template("account.html", message="VIRHE: Käyttäjätunnusta ei ole rekisteröity")
+            flash("Käyttäjätunnusta ei ole rekisteröity!")
+            return redirect("/login")
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
-            return render_template("account.html", message="VIRHE: väärä tunnus tai salasana")
+            flash("Väärä tunnus tai salasana!")
+            return redirect("/login")
 
 @app.route("/logout")
 def logout():
