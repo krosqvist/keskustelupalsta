@@ -20,7 +20,7 @@ def not_found(e):
 
 @app.errorhandler(403)
 def not_found(e):
-    return redirect("/")
+    return render_template("no_permission.html")
 
 @app.route("/")
 def index():
@@ -215,7 +215,6 @@ def delete_comment(comment_id):
     require_login()
     comment = conversations.check_comment(comment_id)
     conversation_id = request.form["conversation_id"]
-    print("conversation_id:", conversation_id)
     if comment["user_id"] != session["user_id"]:
         abort(403)
     if not comment:

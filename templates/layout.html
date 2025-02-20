@@ -9,15 +9,15 @@
   <h1>Keskustelupalsta</h1>
   {% if session.username %}
   <p>
-    Olet kirjautunut nimellä <a href="user/{{ session.user_id }}">{{ session.username }}</a>, id-numerosi on {{ session.user_id }}
+    Olet kirjautunut nimellä <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
   </p>
   <p>
-    <a href="/logout">Kirjaudu ulos</a> |
+   | <a href="/logout">Kirjaudu ulos</a> |
     <a href="/new_conversation">Uusi keskustelu</a> |
   {% endif %}
 
   {% if not session.username %}
-    <a href="/login">Kirjaudu sisään</a> |
+   | <a href="/login">Kirjaudu sisään</a> |
     <a href="/register">Luo tunnus</a> |
   {% endif %}
   <a href="/find_conversation">Etsi keskustelu</a> |

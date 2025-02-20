@@ -20,11 +20,6 @@
   <input type="submit" value="Hae">
 </form>
 
-<p>
-  <a href="/">Takaisin</a>
-</p>
-
-{% if query %}
 <h2>Tulokset</h2>
 <ul>
   {% for user in results %}
@@ -33,5 +28,4 @@
     </li>
   {% endfor %}
 </ul>
-{% endif %}
 {% endblock %}

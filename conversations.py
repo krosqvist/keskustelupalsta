@@ -7,12 +7,10 @@ def add_timestamp():
     return str(formatted_time)
 
 def add_conversation(title, opening, user_id, classes, image):
-    print(image)
     sql = "INSERT INTO conversations (title, opening, user_id, image, modification_time) VALUES (?, ?, ?, ?, ?)"
     db.execute(sql, [title, opening, user_id, image, add_timestamp()])
 
     conversation_id = db.last_insert_id()
-    print("conversation_id when creating", conversation_id)
     sql = "INSERT INTO conversation_classes (conversation_id, title, value) VALUES (?, ?, ?)"
     for title, value in classes:
         db.execute(sql, [conversation_id, title, value])
@@ -56,7 +54,6 @@ def update_conversation(conversation_id, title, opening, classes, image):
 
     sql = "INSERT INTO conversation_classes (conversation_id, title, value) VALUES (?, ?, ?)"
     for class_title, class_value in classes:
-        print(f"Inserting: ({conversation_id}, {class_title}, {class_value})")
         db.execute(sql, [conversation_id, class_title, class_value])
 
 def delete_conversation(conversation_id):

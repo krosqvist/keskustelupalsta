@@ -16,10 +16,7 @@
 <h2>Kommentit</h2>
 <ul>
   {% for comment in comments %}
-  <li><a href="/conversation/{{ comment.conversation_id }}">{{ comment.comment }}</a> {{comment.modification_time}} </li>
+  <li><a style="white-space: pre-wrap; word-wrap: break-word; max-width: 600px;" href="/conversation/{{ comment.conversation_id }}">{{ comment.comment }}</a> {{comment.modification_time}} </li>
   {% endfor %}
 </ul>
-<p>
-  <a href="/">Takaisin</a>
-</p>
 {% endblock %}
