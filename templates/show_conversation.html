@@ -1,72 +1,67 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>{{ conversation.title }}</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>{{ conversation.title }}</h1>
-  {% if session.user_id == conversation.user_id %}
-  <p>
-    <a href="/edit_conversation/{{ conversation.id }}">Muokkaa</a>
-    <a href="/delete_conversation/{{ conversation.id }}">Poista</a>
-  </p>
+{% block content %}
+<h2>{{ conversation.title }}</h2>
+{% if session.user_id == conversation.user_id %}
+<p>
+  <a href="/edit_conversation/{{ conversation.id }}">Muokkaa</a>
+  <a href="/delete_conversation/{{ conversation.id }}">Poista</a>
+</p>
+{% endif %}
+<p>
+  Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a>
+</p>
+<p>
+  {% if classes %}
+  Keskustelun luokitukset:
+  <ul>
+    {% for class in classes %}
+      <li>{{ class.title }}: {{ class.value }}</li>
+    {% endfor %}
+  </ul>
   {% endif %}
+</p>
+<p>
+  {% if conversation.image %}
+    <img src="/image/{{ conversation.id }}" />
+  {% endif %}
+</p>
+<p>
+  {{ conversation.opening.replace('\n', '<br>') | safe }}
+</p>
+<p>
+  Viimeksi muokattu: {{ conversation.modification_time }}
+</p>
+<p>
+  <a href="/">Takaisin</a>
+</p>
+  <h2>Kommentit</h2>
   <p>
-    Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a>
-  </p>
-  <p>
-    {% if classes %}
-    Keskustelun luokitukset:
-    <ul>
-      {% for class in classes %}
-        <li>{{ class.title }}: {{ class.value }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-  </p>
-  <p>
-    {% if conversation.image %}
-      <img src="/image/{{ conversation.id }}" />
-    {% endif %}
-  </p>
-  <p>
-    {{ conversation.opening.replace('\n', '<br>') | safe }}
-  </p>
-  <p>
-    Viimeksi muokattu: {{ conversation.modification_time }}
-  </p>
-  <p>
-    <a href="/">Takaisin</a>
-  </p>
-    <h2>Kommentit</h2>
-    <p>
-      {% for comment in comments %}
-        <hr />
-        <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{comment.modification_time}}
-        <p>
-          {{comment.comment.replace('\n', '<br>') | safe }}
-          {% if session.user_id == comment.user_id %}
-          <form action="/delete_comment/{{ comment.id }}" method="post">
-            <input type="submit" name="delete" value="Poista" />
-            <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
-          </form>
-          {% endif %}
-        </p>
-        </li>
-      {% endfor %}
-    </p>
-    {% if session.user_id %}
-    <form action="/create_comment" method="post">
-      Kommentoi: <br />
-      <textarea name="comment" rows="15", cols="50" maxlength="1000" required></textarea>
+    {% for comment in comments %}
+      <hr />
+      <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{comment.modification_time}}
       <p>
-        <input type="submit" value="Kommentoi" />
+        {{comment.comment.replace('\n', '<br>') | safe }}
+        {% if session.user_id == comment.user_id %}
+        <form action="/delete_comment/{{ comment.id }}" method="post">
+          <input type="submit" name="delete" value="Poista" />
+          <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+        </form>
+        {% endif %}
       </p>
-      <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
-    </form>
-    {% endif %}
-</body>
-
-</html>
+      </li>
+    {% endfor %}
+  </p>
+  {% if session.user_id %}
+  <form action="/create_comment" method="post">
+    Kommentoi: <br />
+    <textarea name="comment" rows="15", cols="50" maxlength="1000" required></textarea>
+    <p>
+      <input type="submit" value="Kommentoi" />
+    </p>
+    <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+  </form>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+  <h1>Keskustelupalsta</h1>
+  {% if session.username %}
+  <p>
+    Olet kirjautunut nimellä <a href="user/{{ session.user_id }}">{{ session.username }}</a>, id-numerosi on {{ session.user_id }}
+  </p>
+  <p>
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+  <p>
+    <a href="/new_conversation">Uusi keskustelu</a>
+  </p>
+  {% endif %}
+
+  {% if not session.username %}
+  <p>
+    <a href="/login">Kirjaudu sisään</a>
+    <a href="/register">Luo tunnus</a>
+  </p>
+  {% endif %}
+  <a href="/find_conversation">Etsi keskustelu</a>
+  <a href="/find_user">Etsi käyttäjiä</a>
+
+  {% block content %}{% endblock %}
+</body>
+</html>

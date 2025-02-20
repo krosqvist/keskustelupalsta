@@ -1,61 +1,56 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Etsi keskustelu</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>Etsi keskustelu</h1>
-  {% if session.username %}
+{% block content %}
+<h2>Etsi keskustelu</h2>
+{% if session.username %}
+<p>
+  Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id }}
+</p>
+<p>
+  <a href="/logout">Kirjaudu ulos</a>
+</p>
+{% endif %}
+
+<form action="/find_conversation" method="get">
   <p>
-    Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id }}
+    Hae keskustelun otsikon tai avauksen perusteella.
   </p>
   <p>
-    <a href="/logout">Kirjaudu ulos</a>
+    Hakusana: <input type="text" name="query" value="{{ query or '' }}">
   </p>
-  {% endif %}
-
-  <form action="/find_conversation" method="get">
-    <p>
-      Hae keskustelun otsikon tai avauksen perusteella.
-    </p>
-    <p>
-      Hakusana: <input type="text" name="query" value="{{ query or '' }}">
-    </p>
-    <p>
-      {% for class, options in classes.items() %}
-        <p>
-          {{ class }}: <br />
-          <select name="classes">
-            <option value=""></option>
-            {% for option in options %}
-              <option value="{{ class }}:{{ option }}"
-                      {% if class + ':' + option in selected_classes %}
-                          selected
-                      {% endif %}>
-                {{ option }}
-              </option>
-            {% endfor %}
-          </select>
-        </p>
-      {% endfor %}
-    </p>
-    <input type="submit" value="Hae">
-  </form>
-
   <p>
-    <a href="/">Takaisin</a>
-  </p>
-
-  <h2>Tulokset</h2>
-  <ul>
-    {% for conversation in results %}
-      <li>
-        <a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a>
-      </li>
+    {% for class, options in classes.items() %}
+      <p>
+        {{ class }}: <br />
+        <select name="classes">
+          <option value=""></option>
+          {% for option in options %}
+            <option value="{{ class }}:{{ option }}"
+                    {% if class + ':' + option in selected_classes %}
+                        selected
+                    {% endif %}>
+              {{ option }}
+            </option>
+          {% endfor %}
+        </select>
+      </p>
     {% endfor %}
-  </ul>
-</body>
+  </p>
+  <input type="submit" value="Hae">
+</form>
 
-</html>
+<p>
+  <a href="/">Takaisin</a>
+</p>
+
+<h2>Tulokset</h2>
+<ul>
+  {% for conversation in results %}
+    <li>
+      <a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

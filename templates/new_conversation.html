@@ -1,37 +1,32 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Uusi keskustelu</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>Uusi keskustelu</h1>
-  <form action="/create_conversation" method="post" enctype="multipart/form-data">
-    <p>
-      Otsikko: <br />
-      <input type="text" name="title" maxlength="100" required/>
-    </p>
-    {% for class in classes %}
-    <p>
-      {{ class }}: <br />
-      <select name="classes">
-      {% for option in classes[class] %}
-        <option value="{{ class }}:{{ option }}">{{ option }}</option>
-      {% endfor %}
-      </select>
-    </p>
+{% block content %}
+<h2>Uusi keskustelu</h2>
+<form action="/create_conversation" method="post" enctype="multipart/form-data">
+  <p>
+    Otsikko: <br />
+    <input type="text" name="title" maxlength="100" required/>
+  </p>
+  {% for class in classes %}
+  <p>
+    {{ class }}: <br />
+    <select name="classes">
+    {% for option in classes[class] %}
+      <option value="{{ class }}:{{ option }}">{{ option }}</option>
     {% endfor %}
+    </select>
+  </p>
+  {% endfor %}
+  <p>
+    Avaus: <br />
+    <textarea name="opening" rows="15", cols="50" maxlength="1000" required></textarea>
+  </p>
     <p>
-      Avaus: <br />
-      <textarea name="opening" rows="15", cols="50" maxlength="1000" required></textarea>
+      Kuva (max 100KB):
+      <input type="file" name="image" accept=".jpg" />
     </p>
-      <p>
-        Kuva (max 100KB):
-        <input type="file" name="image" accept=".jpg" />
-      </p>
-    <input type="submit" value="Luo keskustelu" />
-  </form>
-</body>
-
-</html>
+  <input type="submit" value="Luo keskustelu" />
+</form>
+{% endblock %}

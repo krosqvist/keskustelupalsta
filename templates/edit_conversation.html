@@ -1,59 +1,54 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Muokkaa keskustelunavausta</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>Muokkaa keskustelunavausta</h1>
-  <form action="/update_conversation" method="post" enctype="multipart/form-data">
-    <p>
-      Otsikko: <br />
-      <input type="text" name="title" value="{{ conversation.title }}" maxlength="100" required/>
-    </p>
-    <p>
-      <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
-      {% for class in all_classes %}
-      <p>
-        <label for="class{{ class }}">{{ class }}</a>: <br />
-        <select name="classes" id="class{{ class}}">
-          <option value="">(valitse)</option>
-        {% for option in all_classes[class] %}
-          {% if classes[class] == option %}
-          <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
-          {% else %}
-          <option value="{{ class }}:{{ option }}">{{ option }}</option>
-          {% endif %}
-        {% endfor %}
-        </select>
-      </p>
-    {% endfor %}
-    </p>
-    <p>
-      Avaus: <br />
-      <textarea name="opening" rows="15", cols="50" maxlength="1000" required>{{ conversation.opening }}</textarea>
-    </p>
-    <p>
-      {% if conversation.image %}
-      <img src="/image/{{ conversation.id }}" alt="Nykyinen kuva"/> <br />
-        <label>
-          <input type="checkbox" name="delete_image" value="1"> Poista nykyinen kuva
-        </label>
-      {% else %}
-        <p>Ei nykyistä kuvaa.</p>
-      {% endif %}
-    </p>
-    <p>
-      Lataa uusi kuva (max 100KB):
-      <input type="file" name="image" accept=".jpg" />
-    </p>
-    <p>
-      Jätä tyhjäksi poistaaksesi kuvan
-    </p>
+{% block content %}
+<h2>Muokkaa keskustelunavausta</h2>
+<form action="/update_conversation" method="post" enctype="multipart/form-data">
+  <p>
+    Otsikko: <br />
+    <input type="text" name="title" value="{{ conversation.title }}" maxlength="100" required/>
+  </p>
+  <p>
     <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
-    <input type="submit" value="Muokkaa keskustelunavausta" />
-  </form>
-</body>
-
-</html>
+    {% for class in all_classes %}
+    <p>
+      <label for="class{{ class }}">{{ class }}</a>: <br />
+      <select name="classes" id="class{{ class}}">
+        <option value="">(valitse)</option>
+      {% for option in all_classes[class] %}
+        {% if classes[class] == option %}
+        <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+        {% else %}
+        <option value="{{ class }}:{{ option }}">{{ option }}</option>
+        {% endif %}
+      {% endfor %}
+      </select>
+    </p>
+  {% endfor %}
+  </p>
+  <p>
+    Avaus: <br />
+    <textarea name="opening" rows="15", cols="50" maxlength="1000" required>{{ conversation.opening }}</textarea>
+  </p>
+  <p>
+    {% if conversation.image %}
+    <img src="/image/{{ conversation.id }}" alt="Nykyinen kuva"/> <br />
+      <label>
+        <input type="checkbox" name="delete_image" value="1"> Poista nykyinen kuva
+      </label>
+    {% else %}
+      <p>Ei nykyistä kuvaa.</p>
+    {% endif %}
+  </p>
+  <p>
+    Lataa uusi kuva (max 100KB):
+    <input type="file" name="image" accept=".jpg" />
+  </p>
+  <p>
+    Jätä tyhjäksi poistaaksesi kuvan
+  </p>
+  <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+  <input type="submit" value="Muokkaa keskustelunavausta" />
+</form>
+{% endblock %}

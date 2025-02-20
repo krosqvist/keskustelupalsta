@@ -1,42 +1,37 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Etsi käyttäjiä</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>Etsi käyttäjiä</h1>
-  {% if session.username %}
+{% block content %}
+<h2>Etsi käyttäjiä</h2>
+{% if session.username %}
+<p>
+  Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id }}
+</p>
+<p>
+  <a href="/logout">Kirjaudu ulos</a>
+</p>
+{% endif %}
+
+<form action="/find_user" method="get">
   <p>
-    Olet kirjautunut nimellä {{ session.username }}, id-numerosi on {{ session.user_id }}
+    Hakusana: <input type="text" name="query" value="{{ query or '' }}">
   </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-  {% endif %}
+  <input type="submit" value="Hae">
+</form>
 
-  <form action="/find_user" method="get">
-    <p>
-      Hakusana: <input type="text" name="query" value="{{ query or '' }}">
-    </p>
-    <input type="submit" value="Hae">
-  </form>
+<p>
+  <a href="/">Takaisin</a>
+</p>
 
-  <p>
-    <a href="/">Takaisin</a>
-  </p>
-
-  {% if query %}
-  <h2>Tulokset</h2>
-  <ul>
-    {% for user in results %}
-      <li>
-        <a href="/user/{{ user.id }}">{{ user.username }}</a>
-      </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-</body>
-
-</html>
+{% if query %}
+<h2>Tulokset</h2>
+<ul>
+  {% for user in results %}
+    <li>
+      <a href="/user/{{ user.id }}">{{ user.username }}</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

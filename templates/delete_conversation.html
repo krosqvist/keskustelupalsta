@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Poista keskustelu</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>Poista keskustelu</h1>
-  <p>Keskustelu: {{ conversation.title }}</p>
-  <p>Haluatko varmasti poistaa tämän keskusteluketjun?</p>
-  <form action="/delete_conversation/{{ conversation.id }}" method="post">
-    <input type="submit" name="delete" value="Poista keskustelu" />
-    <input type="submit" name="return" value="Takaisin" />
-  </form>
-</body>
-
-</html>
+{% block content %}
+<h2>Poista keskustelu</h2>
+<p>Keskustelu: {{ conversation.title }}</p>
+<p>Haluatko varmasti poistaa tämän keskusteluketjun?</p>
+<form action="/delete_conversation/{{ conversation.id }}" method="post">
+  <input type="submit" name="delete" value="Poista keskustelu" />
+  <input type="submit" name="return" value="Takaisin" />
+</form>
+{% endblock %}

@@ -1,39 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Keskustelupalsta</title>
-</head>
+{% block title %}Keskustelupalsta{% endblock %}
 
-<body>
-  <h1>Keskustelupalsta</h1>
-  {% if session.username %}
-  <p>
-    Olet kirjautunut nimellä <a href="user/{{ session.user_id }}">{{ session.username }}</a>, id-numerosi on {{ session.user_id }}
-  </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-  <p>
-    <a href="/new_conversation">Uusi keskustelu</a>
-  </p>
-  {% endif %}
-
-  {% if not session.username %}
-  <p>
-    <a href="/login">Kirjaudu sisään</a>
-    <a href="/register">Luo tunnus</a>
-  </p>
-  {% endif %}
-  <a href="/find_conversation">Etsi keskustelu</a>
-  <a href="/find_user">Etsi käyttäjiä</a>
-
-  <h2>Keskustelut</h2>
-  <ul>
-    {% for conversation in conversations %}
-    <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a></li>
-    {% endfor %}
-  </ul>
-</body>
-
-</html>
+{% block content %}
+<h2>Keskustelut</h2>
+<ul>
+  {% for conversation in conversations %}
+  <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
