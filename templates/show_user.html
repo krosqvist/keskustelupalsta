@@ -10,7 +10,7 @@
 <h2>Keskustelunavaukset</h2>
 <ul>
   {% for conversation in conversations %}
-  <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a></li>
+  <li><a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} </li>
   {% endfor %}
 </ul>
 <h2>Kommentit</h2>

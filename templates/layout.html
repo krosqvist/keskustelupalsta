@@ -12,21 +12,19 @@
     Olet kirjautunut nimellä <a href="user/{{ session.user_id }}">{{ session.username }}</a>, id-numerosi on {{ session.user_id }}
   </p>
   <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-  <p>
-    <a href="/new_conversation">Uusi keskustelu</a>
-  </p>
+    <a href="/logout">Kirjaudu ulos</a> |
+    <a href="/new_conversation">Uusi keskustelu</a> |
   {% endif %}
 
   {% if not session.username %}
-  <p>
-    <a href="/login">Kirjaudu sisään</a>
-    <a href="/register">Luo tunnus</a>
-  </p>
+    <a href="/login">Kirjaudu sisään</a> |
+    <a href="/register">Luo tunnus</a> |
   {% endif %}
-  <a href="/find_conversation">Etsi keskustelu</a>
-  <a href="/find_user">Etsi käyttäjiä</a>
+  <a href="/find_conversation">Etsi keskustelu</a> |
+  <a href="/find_user">Etsi käyttäjiä</a> |
+  <a href="/">Etusivulle</a> |
+  </p>
+  <hr />
 
   {% block content %}{% endblock %}
 </body>

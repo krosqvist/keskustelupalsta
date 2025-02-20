@@ -14,6 +14,14 @@ def require_login():
     if "user_id" not in session:
         abort(403)
 
+@app.errorhandler(404)
+def not_found(e):
+    return redirect("/")
+
+@app.errorhandler(403)
+def not_found(e):
+    return redirect("/")
+
 @app.route("/")
 def index():
     all_conversations = conversations.get_conversations()
@@ -238,16 +246,16 @@ def create():
         password1 = request.form["password1"]
         password2 = request.form["password2"]
         if password1 != password2:
-            return "VIRHE: salasanat eivät ole samat"
+            return render_template("account.html", message="VIRHE: salasanat eivät ole samat")
         password_hash = generate_password_hash(password1)
 
         try:
             sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
             db.execute(sql, [username, password_hash])
         except sqlite3.IntegrityError:
-            return "VIRHE: tunnus on jo varattu"
+            return render_template("account.html", message="VIRHE: tunnus on jo varattu")
 
-        return "Tunnus luotu"
+        return render_template("account.html", message="Tunnus luotu")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -264,13 +272,13 @@ def login():
             user_id = result["id"]
             password_hash = result["password_hash"]
         except:
-            return "VIRHE: Käyttäjätunnusta ei ole rekisteröity"
+            return render_template("account.html", message="VIRHE: Käyttäjätunnusta ei ole rekisteröity")
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
-            return "VIRHE: väärä tunnus tai salasana"
+            return render_template("account.html", message="VIRHE: väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():

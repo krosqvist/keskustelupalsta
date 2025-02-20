@@ -11,7 +11,7 @@
 </p>
 {% endif %}
 <p>
-  Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a>
+  Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a>. Viimeksi muokattu: {{ conversation.modification_time }}
 </p>
 <p>
   {% if classes %}
@@ -28,29 +28,20 @@
     <img src="/image/{{ conversation.id }}" />
   {% endif %}
 </p>
-<p>
-  {{ conversation.opening.replace('\n', '<br>') | safe }}
-</p>
-<p>
-  Viimeksi muokattu: {{ conversation.modification_time }}
-</p>
-<p>
-  <a href="/">Takaisin</a>
+<p style="white-space: pre-wrap; word-wrap: break-word; max-width: 600px;">{{ conversation.opening }}
 </p>
   <h2>Kommentit</h2>
   <p>
     {% for comment in comments %}
       <hr />
-      <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{comment.modification_time}}
-      <p>
-        {{comment.comment.replace('\n', '<br>') | safe }}
+      <li><a href="/user/{{ comment.user_id }}">{{ comment.username }}</a> {{ comment.modification_time }}
         {% if session.user_id == comment.user_id %}
         <form action="/delete_comment/{{ comment.id }}" method="post">
           <input type="submit" name="delete" value="Poista" />
           <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
         </form>
         {% endif %}
-      </p>
+      <p style="white-space: pre-wrap; word-wrap: break-word; max-width: 600px;">{{ comment.comment }}</p>
       </li>
     {% endfor %}
   </p>
