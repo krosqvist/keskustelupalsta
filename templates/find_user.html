@@ -7,7 +7,8 @@
 
 <form action="/find_user" method="get">
   <p>
-    Hakusana: <input type="text" name="query" value="{{ query or '' }}">
+    <label for="query">Hakusana:</label> <br />
+    <input type="text" name="query" id="query" value="{{ query or '' }}">
   </p>
   <input type="submit" value="Hae">
 </form>

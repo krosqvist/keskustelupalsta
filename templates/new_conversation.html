@@ -6,13 +6,13 @@
 <h2>Uusi keskustelu</h2>
 <form action="/create_conversation" method="post" enctype="multipart/form-data">
   <p>
-    Otsikko: <br />
-    <input type="text" name="title" maxlength="100" required/>
+    <label for="title">Otsikko:</label> <br />
+    <input type="text" name="title" id="title" maxlength="100" required/>
   </p>
   {% for class in classes %}
   <p>
-    {{ class }}: <br />
-    <select name="classes">
+    <label for="class{{ class }}">{{ class }}:</label> <br />
+    <select name="classes" id="class{{ class }}">
       <option value="">(valitse)</option>
     {% for option in classes[class] %}
       <option value="{{ class }}:{{ option }}">{{ option }}</option>
@@ -21,12 +21,12 @@
   </p>
   {% endfor %}
   <p>
-    Avaus: <br />
-    <textarea name="opening" rows="15", cols="100" maxlength="5000" required></textarea>
+    <label for="opening">Avaus:</label> <br />
+    <textarea name="opening" id="opening" rows="15", cols="100" maxlength="5000" required></textarea>
   </p>
     <p>
-      Kuva (max 100KB, jpg):
-      <input type="file" name="image" accept=".jpg" />
+      <label for="image">Kuva (max 100KB, jpg):</label> <br />
+      <input type="file" name="image" id="image" accept=".jpg" />
     </p>
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Luo keskustelu" />

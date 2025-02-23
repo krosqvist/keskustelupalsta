@@ -27,7 +27,7 @@
   </div>
 <p>
   {% if conversation.image %}
-  <img src="/image/{{ conversation.id }}" style="max-width:750px; max-height:750px;"/>
+  <img src="/image/{{ conversation.id }}" style="max-width:750px; max-height:750px;" alt="Avauksen kuva"/>
   {% endif %}
 </p>
   <h2>Kommentit</h2>
@@ -49,8 +49,8 @@
   </p>
   {% if session.user_id %}
   <form action="/create_comment" method="post">
-    Kommentoi: <br />
-    <textarea name="comment" rows="15", cols="100" maxlength="5000" required></textarea>
+    <label for="comment">Kommentoi:</label> <br />
+    <textarea name="comment" id="comment" rows="15", cols="100" maxlength="5000" required></textarea>
     <p>
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <input type="submit" value="Kommentoi" />

@@ -10,13 +10,14 @@
     Hae keskustelun otsikon tai avauksen perusteella.
   </p>
   <p>
-    Hakusana: <input type="text" name="query" value="{{ query or '' }}">
+    <label for="query">Hakusana:</label> <br />
+    <input type="text" name="query" id="query" value="{{ query or '' }}">
   </p>
   <p>
     {% for class, options in classes.items() %}
       <p>
-        {{ class }}: <br />
-        <select name="classes">
+        <label for="class{{ class }}">{{ class }}:</label> <br />
+        <select name="classes" id="class{{ class }}">
           <option value=""></option>
           {% for option in options %}
             <option value="{{ class }}:{{ option }}"

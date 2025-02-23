@@ -9,6 +9,7 @@
   Käyttäjällä on {{ conversations | count }} keskustelunavausta ja {{comments | count}} kommenttia keskusteluissa
   </div>
 </p>
+{% if conversations %}
 <h2>Keskustelunavaukset</h2>
 <ul>
   <div class="conversation">
@@ -17,6 +18,8 @@
   {% endfor %}
   </div>
 </ul>
+{% endif %}
+{% if comments %}
 <h2>Kommentit</h2>
 <ul>
   <div class="opening">
@@ -25,4 +28,5 @@
   {% endfor %}
   </div>
 </ul>
+{% endif %}
 {% endblock %}
