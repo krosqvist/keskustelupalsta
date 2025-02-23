@@ -42,4 +42,12 @@
     </li>
   {% endfor %}
 </ul>
+{% if page_count > 1 %}
+<p>
+  <a href="/find_conversation/{{ page - 1 }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&lt;&lt;</a>
+  Sivu {{ page }}/{{ page_count }}
+  <a href="/find_conversation/{{ page + 1 }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&gt;&gt;</a>
+</p>
+<hr />
+{% endif %}
 {% endblock %}

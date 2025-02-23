@@ -35,3 +35,5 @@ CREATE TABLE comments (
     modification_time TEXT,
     image BLOB
 );
+
+CREATE INDEX idx_comments ON comments (conversation_id);

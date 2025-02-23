@@ -21,4 +21,12 @@
     </li>
   {% endfor %}
 </ul>
+{% if page_count > 1 %}
+<p>
+  <a href="/find_user/{{ page - 1 }}?query={{ query }}">&lt;&lt;</a>
+  Sivu {{ page }}/{{ page_count }}
+  <a href="/find_user/{{ page + 1 }}?query={{ query }}">&gt;&gt;</a>
+</p>
+<hr />
+{% endif %}
 {% endblock %}

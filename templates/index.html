@@ -3,12 +3,21 @@
 {% block title %}Keskustelupalsta{% endblock %}
 
 {% block content %}
+
 <h2>Tuoreimmat keskustelut</h2>
 {% for conversation in conversations %}
 <div class="conversation">
-<a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} <br />
-Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a> <br />
-Kommentteja: {{ conversation.comments }}
+  <a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} <br />
+  Keskustelunavaaja: <a href="/user/{{ conversation.user_id }}">{{ conversation.username }}</a> <br />
+  Kommentteja: {{ conversation.comments }}
 </div>
 {% endfor %}
+{% if page_count > 1 %}
+<p>
+  <a href="/{{ page - 1 }}">&lt;&lt;</a>
+  Sivu {{ page }}/{{ page_count }}
+  <a href="/{{ page + 1 }}">&gt;&gt;</a>
+</p>
+<hr />
+{% endif %}
 {% endblock %}

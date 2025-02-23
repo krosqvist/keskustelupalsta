@@ -1,5 +1,6 @@
 import sqlite3
 import secrets
+import math
 from flask import Flask
 from flask import abort, redirect, render_template, request, session, make_response, flash
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -28,12 +29,26 @@ def not_found(e):
     return render_template("no_permission.html")
 
 @app.route("/")
-def index():
-    all_conversations = conversations.get_conversations()
-    return render_template("index.html", conversations=all_conversations)
+@app.route("/<int:page>")
+def index(page=1):
+    conversation_count = conversations.conversation_count()
+    page_size = 10
+    page_count = math.ceil(conversation_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
+    all_conversations = conversations.get_conversations(page, page_size)
+    return render_template("index.html", conversations=all_conversations, page=page, page_count=page_count)
 
 @app.route("/find_conversation")
-def find_conversation():
+@app.route("/find_conversation/<int:page>")
+def find_conversation(page=1):
+    page_size = 10
+
     classes = conversations.get_all_classes()
     query = request.args.get("query")
     if query:
@@ -51,28 +66,60 @@ def find_conversation():
                 abort(403)
             my_classes.append((parts[0], parts[1]))
 
-    results = conversations.find_conversations(search, my_classes)
+    results, conversation_count = conversations.find_conversations(search, my_classes, page, page_size)
+    print(conversation_count)
+    page_count = math.ceil(conversation_count / page_size)
+    page_count = max(page_count, 1)
+    print(page_count)
+
+    if page < 1:
+        return redirect("/find_conversation/1")
+    if page > page_count:
+        return redirect("/find_conversation/" + str(page_count))
+
     selected_classes = [f"{class_name}:{class_value}" for class_name, class_value in my_classes]
-    return render_template("find_conversation.html", query=query, results=results, classes=classes, selected_classes=selected_classes)
+    return render_template("find_conversation.html", query=query, results=results, classes=classes, selected_classes=selected_classes, page=page, page_count=page_count)
 
 @app.route("/find_user")
-def find_user():
+@app.route("/find_user/<int:page>")
+def find_user(page=1):
+    page_size = 10
     query = request.args.get("query")
     if query:
         search = f"%{query}%"
     else:
         search = "%%"
-    results = users.find_users(search)
-    return render_template("find_user.html", query=query, results=results)
+    results, user_count = users.find_users(search, page, page_size)
+
+    page_count = math.ceil(user_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/find_user/1")
+    if page > page_count:
+        return redirect("/find_user/" + str(page_count))
+
+    return render_template("find_user.html", query=query, results=results, page=page, page_count=page_count)
 
 @app.route("/conversation/<int:conversation_id>")
-def show_conversation(conversation_id):
+@app.route("/conversation/<int:conversation_id>/<int:page>")
+def show_conversation(conversation_id, page=1):
+    comment_count = conversations.comment_count(conversation_id)
+    page_size = 50
+    page_count = math.ceil(comment_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
     conversation = conversations.get_conversation(conversation_id)
     if not conversation:
         abort(404)
     classes = conversations.get_classes(conversation_id)
-    comments = conversations.get_comments(conversation_id)
-    return render_template("show_conversation.html", conversation=conversation, classes=classes, comments=comments)
+    comments = conversations.get_comments(conversation_id, page, page_size)
+    return render_template("show_conversation.html", conversation=conversation, classes=classes, comments=comments, page=page, page_count=page_count)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):

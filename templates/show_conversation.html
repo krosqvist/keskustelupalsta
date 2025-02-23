@@ -58,4 +58,12 @@
     <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
   </form>
   {% endif %}
+  {% if page_count > 1 %}
+  <p>
+    <a href="/conversation/{{ conversation.id }}/{{ page - 1 }}">&lt;&lt;</a>
+    Sivu {{ page }}/{{ page_count }}
+    <a href="/conversation/{{ conversation.id }}/{{ page + 1 }}">&gt;&gt;</a>
+  </p>
+  <hr />
+  {% endif %}
 {% endblock %}
