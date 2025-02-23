@@ -1,4 +1,5 @@
 import sqlite3
+import secrets
 from flask import Flask
 from flask import abort, redirect, render_template, request, session, make_response, flash
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,11 +14,15 @@ app.secret_key = config.secret_key
 def require_login():
     if "user_id" not in session:
         abort(403)
-"""
+
+def check_csrf():
+    if request.form["csrf_token"] != session["csrf_token"] or "csrf_token" not in request.form:
+        abort(403)
+
 @app.errorhandler(404)
 def not_found(e):
     return redirect("/")
-"""
+
 @app.errorhandler(403)
 def not_found(e):
     return render_template("no_permission.html")
@@ -87,6 +92,7 @@ def new_conversation():
 @app.route("/create_conversation", methods=["POST"])
 def create_conversation():
     require_login()
+    check_csrf()
     title = request.form["title"]
     if len(title) > 100:
         flash("Otsikko on liian pitkä!")
@@ -147,6 +153,7 @@ def edit_conversation(conversation_id):
 @app.route("/update_conversation", methods=["POST"])
 def update_conversation():
     require_login()
+    check_csrf()
     conversation_id = request.form["conversation_id"]
     conversation = conversations.get_conversation(conversation_id)
     if not conversation:
@@ -209,6 +216,7 @@ def delete_conversation(conversation_id):
         return render_template("delete_conversation.html", conversation=conversation)
 
     if request.method == "POST":
+        check_csrf()
         if "delete" in request.form:
             conversations.delete_conversation(conversation_id)
             return redirect("/")
@@ -227,6 +235,7 @@ def show_image(conversation_id):
 @app.route("/delete_comment/<int:comment_id>", methods=["POST"])
 def delete_comment(comment_id):
     require_login()
+    check_csrf()
     comment = conversations.check_comment(comment_id)
     conversation_id = request.form["conversation_id"]
     if comment["user_id"] != session["user_id"]:
@@ -239,6 +248,7 @@ def delete_comment(comment_id):
 @app.route("/create_comment", methods=["POST"])
 def new_comment():
     require_login()
+    check_csrf()
     comment = request.form["comment"]
     if not comment:
         abort(403)
@@ -258,28 +268,28 @@ def register():
 
 @app.route("/create", methods=["POST"])
 def create():
-        username = request.form["username"]
-        if not username or len(username) < 3 or len(username) > 20:
-            flash("Käyttäjänimen pituus täytyy olla 3-20 merkkiä!")
-            return redirect("/register")
-        password1 = request.form["password1"]
-        if not password1 or len(password1) < 3:
-            flash("Salasanan täytyy olla vähintään 3 merkkiä!")
-            return redirect("/register")
-        password2 = request.form["password2"]
-        if password1 != password2:
-            flash("Salasanat eivät täsmää!")
-            return redirect("/register")
-        password_hash = generate_password_hash(password1)
+    username = request.form["username"]
+    if not username or len(username) < 3 or len(username) > 20:
+        flash("Käyttäjänimen pituus täytyy olla 3-20 merkkiä!")
+        return redirect("/register")
+    password1 = request.form["password1"]
+    if not password1 or len(password1) < 3:
+        flash("Salasanan täytyy olla vähintään 3 merkkiä!")
+        return redirect("/register")
+    password2 = request.form["password2"]
+    if password1 != password2:
+        flash("Salasanat eivät täsmää!")
+        return redirect("/register")
+    password_hash = generate_password_hash(password1)
 
-        try:
-            sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
-            db.execute(sql, [username, password_hash])
-        except sqlite3.IntegrityError:
-            flash("Käyttäjätunnus on jo käytössä!")
-            return redirect("/register")
+    try:
+        sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
+        db.execute(sql, [username, password_hash])
+    except sqlite3.IntegrityError:
+        flash("Käyttäjätunnus on jo käytössä!")
+        return redirect("/register")
 
-        return render_template("account.html", message="Tunnus luotu")
+    return render_template("account.html", message="Tunnus luotu")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -301,6 +311,7 @@ def login():
         if check_password_hash(password_hash, password):
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             flash("Väärä tunnus tai salasana!")

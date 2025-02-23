@@ -38,6 +38,7 @@
       <p>{{ comment.comment }}</p>
       {% if session.user_id == comment.user_id %}
       <form action="/delete_comment/{{ comment.id }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" name="delete" value="Poista" />
         <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
       </form>
@@ -51,6 +52,7 @@
     Kommentoi: <br />
     <textarea name="comment" rows="15", cols="100" maxlength="5000" required></textarea>
     <p>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <input type="submit" value="Kommentoi" />
     </p>
     <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />

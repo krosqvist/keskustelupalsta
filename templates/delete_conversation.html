@@ -7,6 +7,7 @@
 <p>Keskustelu: {{ conversation.title }}</p>
 <p>Haluatko varmasti poistaa tämän keskusteluketjun?</p>
 <form action="/delete_conversation/{{ conversation.id }}" method="post">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" name="delete" value="Poista keskustelu" />
   <input type="submit" name="return" value="Takaisin" />
 </form>

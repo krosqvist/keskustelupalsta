@@ -49,8 +49,12 @@
     Jätä tyhjäksi poistaaksesi kuvan
   </p>
   <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Muokkaa keskustelunavausta" />
 </form>
+<p>
+  <a href="/conversation/{{ conversation.id }}">Peruuta</a>
+</p>
 {% for message in get_flashed_messages() %}
 <p>
   <b>{{ message }}</b>
