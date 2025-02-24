@@ -37,3 +37,5 @@ CREATE TABLE comments (
 );
 
 CREATE INDEX idx_comments ON comments (conversation_id);
+CREATE INDEX idx_conversations_user_id ON conversations (user_id);
+CREATE INDEX idx_conversations_modification_time ON conversations (modification_time);

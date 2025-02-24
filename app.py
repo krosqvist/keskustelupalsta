@@ -1,8 +1,9 @@
 import sqlite3
 import secrets
 import math
+import time
 from flask import Flask
-from flask import abort, redirect, render_template, request, session, make_response, flash
+from flask import abort, redirect, render_template, request, session, make_response, flash, g
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import db
@@ -28,6 +29,16 @@ def not_found(e):
 def not_found(e):
     return render_template("no_permission.html")
 
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response
+
 @app.route("/")
 @app.route("/<int:page>")
 def index(page=1):
@@ -50,7 +61,7 @@ def find_conversation(page=1):
     page_size = 10
 
     classes = conversations.get_all_classes()
-    query = request.args.get("query")
+    query = request.args.get("query", "")
     if query:
         search = f"%{query}%"
     else:
@@ -83,8 +94,8 @@ def find_conversation(page=1):
 @app.route("/find_user")
 @app.route("/find_user/<int:page>")
 def find_user(page=1):
-    page_size = 10
-    query = request.args.get("query")
+    page_size = 25
+    query = request.args.get("query", "")
     if query:
         search = f"%{query}%"
     else:
@@ -99,7 +110,7 @@ def find_user(page=1):
     if page > page_count:
         return redirect("/find_user/" + str(page_count))
 
-    return render_template("find_user.html", query=query, results=results, page=page, page_count=page_count)
+    return render_template("find_user.html", query=query, search=search, results=results, page=page, page_count=page_count)
 
 @app.route("/conversation/<int:conversation_id>")
 @app.route("/conversation/<int:conversation_id>/<int:page>")
@@ -320,8 +331,8 @@ def create():
         flash("Käyttäjänimen pituus täytyy olla 3-20 merkkiä!")
         return redirect("/register")
     password1 = request.form["password1"]
-    if not password1 or len(password1) < 3:
-        flash("Salasanan täytyy olla vähintään 3 merkkiä!")
+    if not password1 or len(password1) < 3 or len(password1) > 50:
+        flash("Salasanan täytyy olla 3-50 merkkiä!")
         return redirect("/register")
     password2 = request.form["password2"]
     if password1 != password2:

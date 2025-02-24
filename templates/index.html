@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h2>Tuoreimmat keskustelut</h2>
+<h2>Kuumimmat keskustelut</h2>
 {% for conversation in conversations %}
 <div class="conversation">
   <a href="/conversation/{{ conversation.id }}">{{ conversation.title }}</a> {{conversation.modification_time}} <br />

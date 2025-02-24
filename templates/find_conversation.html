@@ -44,11 +44,15 @@
 </ul>
 {% if page_count > 1 %}
 <p>
-  <a href="/find_conversation/1?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&laquo;&laquo;</a>
-  <a href="/find_conversation/{{ page - 1 }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&lt;&lt;</a>
+  {% if not page == 1 %}
+  <a href="/find_conversation/1?query={{ query|urlencode }}{% for class in selected_classes %}&classes={{ class|urlencode }}{% endfor %}">&laquo;&laquo;</a>
+  <a href="/find_conversation/{{ page - 1 }}?query={{ query|urlencode }}{% for class in selected_classes %}&classes={{ class|urlencode }}{% endfor %}">&lt;&lt;</a>
+  {% endif %}
   Sivu {{ page }}/{{ page_count }}
-  <a href="/find_conversation/{{ page + 1 }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&gt;&gt;</a>
-  <a href="/find_conversation/{{ page_count }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&raquo;&raquo;</a>
+  {% if not page == page_count %}
+  <a href="/find_conversation/{{ page + 1 }}?query={{ query|urlencode }}{% for class in selected_classes %}&classes={{ class|urlencode }}{% endfor %}">&gt;&gt;</a>
+  <a href="/find_conversation/{{ page_count }}?query={{ query|urlencode }}{% for class in selected_classes %}&classes={{ class|urlencode }}{% endfor %}">&raquo;&raquo;</a>
+  {% endif %}
 </p>
 <hr />
 {% endif %}

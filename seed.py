@@ -9,9 +9,9 @@ cursor.execute("DELETE FROM conversations")
 cursor.execute("DELETE FROM conversation_classes")
 cursor.execute("DELETE FROM comments")
 
-total_users = 10000
-total_conversations = 100000
-total_comments = 5000000
+total_users = 10**4
+total_conversations = 10**6
+total_comments = 10**7
 
 for i in range(1, total_users + 1):
     cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)",

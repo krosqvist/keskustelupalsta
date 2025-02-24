@@ -136,15 +136,6 @@ def find_conversations(search, my_classes, page, page_size):
                  FROM conversations c
                  WHERE (c.title LIKE ? OR c.opening LIKE ?)"""
 
-    if my_classes:
-        sql += """ GROUP BY c.id
-                   HAVING COUNT(DISTINCT cc.title || cc.value) = ?
-                   ORDER BY c.id DESC"""
-        parameters.append(len(my_classes))
-
-    else:
-        sql += " ORDER BY c.id DESC"
-
     conversation_count = db.query(sql, parameters)
     if not conversation_count or conversation_count[0][0] is None:
         conversation_count = 0
