@@ -23,9 +23,11 @@
 </ul>
 {% if page_count > 1 %}
 <p>
+  <a href="/find_user/1?query={{ query }}">&laquo;&laquo;</a>
   <a href="/find_user/{{ page - 1 }}?query={{ query }}">&lt;&lt;</a>
   Sivu {{ page }}/{{ page_count }}
   <a href="/find_user/{{ page + 1 }}?query={{ query }}">&gt;&gt;</a>
+  <a href="/find_user/{{ page_count }}?query={{ query }}">&raquo;&raquo;</a>
 </p>
 <hr />
 {% endif %}

@@ -60,10 +60,11 @@
   {% endif %}
   {% if page_count > 1 %}
   <p>
+    <a href="/conversation/{{ conversation.id }}/1">&laquo;&laquo;</a>
     <a href="/conversation/{{ conversation.id }}/{{ page - 1 }}">&lt;&lt;</a>
     Sivu {{ page }}/{{ page_count }}
     <a href="/conversation/{{ conversation.id }}/{{ page + 1 }}">&gt;&gt;</a>
+    <a href="/conversation/{{ conversation.id }}/{{ page_count }}">&raquo;&raquo;</a>
   </p>
-  <hr />
   {% endif %}
 {% endblock %}

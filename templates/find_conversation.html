@@ -44,9 +44,11 @@
 </ul>
 {% if page_count > 1 %}
 <p>
+  <a href="/find_conversation/1?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&laquo;&laquo;</a>
   <a href="/find_conversation/{{ page - 1 }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&lt;&lt;</a>
   Sivu {{ page }}/{{ page_count }}
   <a href="/find_conversation/{{ page + 1 }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&gt;&gt;</a>
+  <a href="/find_conversation/{{ page_count }}?query={{ query }}{% for class in selected_classes %}&classes={{ class }}{% endfor %}">&raquo;&raquo;</a>
 </p>
 <hr />
 {% endif %}

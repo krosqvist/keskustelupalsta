@@ -6,11 +6,11 @@
 <h2>Käyttäjän {{ user.username }} tilastot</h2>
 <p>
   <div class="conversation">
-  Käyttäjällä on {{ conversations | count }} keskustelunavausta ja {{comments | count}} kommenttia keskusteluissa
+  Käyttäjällä on {{ conversations_count }} keskustelunavausta ja {{ comments_count }} kommenttia keskusteluissa
   </div>
 </p>
 {% if conversations %}
-<h2>Keskustelunavaukset</h2>
+<h2>Uusimmat keskustelunavaukset</h2>
 <ul>
   <div class="conversation">
   {% for conversation in conversations %}
@@ -20,7 +20,7 @@
 </ul>
 {% endif %}
 {% if comments %}
-<h2>Kommentit</h2>
+<h2>Uusimmat kommentit</h2>
 <ul>
   <div class="opening">
   {% for comment in comments %}

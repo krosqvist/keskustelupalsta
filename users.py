@@ -6,9 +6,18 @@ def get_user(user_id):
     return result[0] if result else None
 
 def get_conversations(user_id):
-    sql = "SELECT id, title, modification_time FROM conversations WHERE user_id = ? ORDER BY id DESC"
+    sql = "SELECT id, title, modification_time FROM conversations WHERE user_id = ? ORDER BY id DESC LIMIT 50"
     result = db.query(sql, [user_id])
-    return result if result else ""
+    if not result:
+        result = ""
+
+    sql = "SELECT COUNT(*) FROM conversations WHERE user_id = ? ORDER BY id DESC"
+    conversation_count = db.query(sql, [user_id])
+    if not conversation_count or conversation_count[0][0] is None:
+        conversation_count = 0
+    else:
+        conversation_count = conversation_count[0][0]
+    return result, conversation_count
 
 def user_count():
     sql = "SELECT COUNT(*) FROM users"
@@ -25,5 +34,14 @@ def find_users(search, page, page_size):
     return results, user_count
 
 def get_comments(user_id):
-    sql = "SELECT id, conversation_id, comment, modification_time FROM comments WHERE user_id = ? ORDER BY id DESC"
-    return db.query(sql, [user_id])
+    sql = "SELECT id, conversation_id, comment, modification_time FROM comments WHERE user_id = ? ORDER BY id DESC LIMIT 50"
+    result = db.query(sql, [user_id])
+
+    sql = "SELECT COUNT(*) FROM comments WHERE user_id = ? ORDER BY id DESC"
+    comment_count = db.query(sql, [user_id])
+    if not comment_count or comment_count[0][0] is None:
+        comment_count = 0
+    else:
+        comment_count = comment_count[0][0]
+
+    return result, comment_count

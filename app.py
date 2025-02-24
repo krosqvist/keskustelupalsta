@@ -126,9 +126,9 @@ def show_user(user_id):
     user = users.get_user(user_id)
     if not user:
         abort(404)
-    comments = users.get_comments(user_id)
-    conversations = users.get_conversations(user_id)
-    return render_template("show_user.html", user=user, conversations=conversations, comments=comments)
+    comments, comments_count = users.get_comments(user_id)
+    conversations, conversations_count = users.get_conversations(user_id)
+    return render_template("show_user.html", user=user, conversations_count=conversations_count, conversations=conversations, comments_count=comments_count, comments=comments)
 
 @app.route("/new_conversation")
 def new_conversation():

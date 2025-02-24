@@ -14,9 +14,11 @@
 {% endfor %}
 {% if page_count > 1 %}
 <p>
+  <a href="/1">&laquo;&laquo;</a>
   <a href="/{{ page - 1 }}">&lt;&lt;</a>
   Sivu {{ page }}/{{ page_count }}
   <a href="/{{ page + 1 }}">&gt;&gt;</a>
+  <a href="/{{ page_count }}">&raquo;&raquo;</a>
 </p>
 <hr />
 {% endif %}
