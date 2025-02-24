@@ -7,11 +7,13 @@ def add_timestamp():
     return str(formatted_time)
 
 def add_conversation(title, opening, user_id, classes, image):
-    sql = "INSERT INTO conversations (title, opening, user_id, image, modification_time) VALUES (?, ?, ?, ?, ?)"
+    sql = """INSERT INTO conversations (title, opening, user_id, image, modification_time)
+          VALUES (?, ?, ?, ?, ?)"""
     db.execute(sql, [title, opening, user_id, image, add_timestamp()])
 
     conversation_id = db.last_insert_id()
-    sql = "INSERT INTO conversation_classes (conversation_id, title, value) VALUES (?, ?, ?)"
+    sql = """INSERT INTO conversation_classes (conversation_id, title, value)
+          VALUES (?, ?, ?)"""
     for title, value in classes:
         db.execute(sql, [conversation_id, title, value])
 
@@ -37,7 +39,8 @@ def conversation_count():
     return db.query(sql)[0][0]
 
 def get_conversations(page, page_size):
-    sql = """SELECT c.id, c.title, c.user_id, c.modification_time, COUNT(co.id) comments, u.username, MAX(co.id)
+    sql = """SELECT c.id, c.title, c.user_id, c.modification_time,
+          COUNT(co.id) comments, u.username, MAX(co.id)
           FROM conversations c, users u
           LEFT JOIN comments co ON c.id = co.conversation_id
           WHERE c.user_id = u.id 
@@ -49,7 +52,8 @@ def get_conversations(page, page_size):
     return db.query(sql, [limit, offset])
 
 def get_conversation(conversation_id):
-    sql = """SELECT c.id, c.title, c.opening, c.modification_time, c.image, u.id user_id, u.username
+    sql = """SELECT c.id, c.title, c.opening, c.modification_time, c.image,
+          u.id user_id, u.username
           FROM conversations c, users u
           WHERE u.id = c.user_id AND
           c.id = ?"""
@@ -145,7 +149,8 @@ def find_conversations(search, my_classes, page, page_size):
 
 
 def add_comment(comment, conversation_id, user_id):
-    sql = "INSERT INTO comments (comment, conversation_id, user_id, modification_time) VALUES (?, ?, ?, ?)"
+    sql = """INSERT INTO comments (comment, conversation_id, user_id, modification_time)
+          VALUES (?, ?, ?, ?)"""
     db.execute(sql, [comment, conversation_id, user_id, add_timestamp()])
 
 def comment_count(conversation_id):

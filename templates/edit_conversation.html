@@ -46,9 +46,6 @@
     <label for="image">Lataa uusi kuva (max 100KB, jpg):</label> <br />
     <input type="file" name="image" id="image" accept=".jpg" />
   </p>
-  <p>
-    Jätä tyhjäksi poistaaksesi kuvan
-  </p>
   <input type="hidden" name="conversation_id" value="{{ conversation.id }}" />
   <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
   <input type="submit" value="Muokkaa keskustelunavausta" />

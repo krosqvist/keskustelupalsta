@@ -53,7 +53,8 @@ def index(page=1):
         return redirect("/" + str(page_count))
 
     all_conversations = conversations.get_conversations(page, page_size)
-    return render_template("index.html", conversations=all_conversations, page=page, page_count=page_count)
+    return render_template("index.html", conversations=all_conversations,
+                           page=page, page_count=page_count)
 
 @app.route("/find_conversation")
 @app.route("/find_conversation/<int:page>")
@@ -77,7 +78,8 @@ def find_conversation(page=1):
                 abort(403)
             my_classes.append((parts[0], parts[1]))
 
-    results, conversation_count = conversations.find_conversations(search, my_classes, page, page_size)
+    results, conversation_count = conversations.find_conversations(search, my_classes,
+                                                                   page, page_size)
     print(conversation_count)
     page_count = math.ceil(conversation_count / page_size)
     page_count = max(page_count, 1)
@@ -88,8 +90,12 @@ def find_conversation(page=1):
     if page > page_count:
         return redirect("/find_conversation/" + str(page_count))
 
-    selected_classes = [f"{class_name}:{class_value}" for class_name, class_value in my_classes]
-    return render_template("find_conversation.html", query=query, results=results, classes=classes, selected_classes=selected_classes, page=page, page_count=page_count)
+    selected_classes = [f"{class_name}:{class_value}"
+                        for class_name, class_value in my_classes]
+
+    return render_template("find_conversation.html", query=query, results=results,
+                           classes=classes, selected_classes=selected_classes,
+                           page=page, page_count=page_count)
 
 @app.route("/find_user")
 @app.route("/find_user/<int:page>")
@@ -110,7 +116,8 @@ def find_user(page=1):
     if page > page_count:
         return redirect("/find_user/" + str(page_count))
 
-    return render_template("find_user.html", query=query, search=search, results=results, page=page, page_count=page_count)
+    return render_template("find_user.html", query=query, search=search,
+                           results=results, page=page, page_count=page_count)
 
 @app.route("/conversation/<int:conversation_id>")
 @app.route("/conversation/<int:conversation_id>/<int:page>")
@@ -130,7 +137,9 @@ def show_conversation(conversation_id, page=1):
         abort(404)
     classes = conversations.get_classes(conversation_id)
     comments = conversations.get_comments(conversation_id, page, page_size)
-    return render_template("show_conversation.html", conversation=conversation, classes=classes, comments=comments, page=page, page_count=page_count)
+    return render_template("show_conversation.html", conversation=conversation,
+                           classes=classes, comments=comments,
+                           page=page, page_count=page_count)
 
 @app.route("/user/<int:user_id>")
 def show_user(user_id):
@@ -139,7 +148,10 @@ def show_user(user_id):
         abort(404)
     comments, comments_count = users.get_comments(user_id)
     conversations, conversations_count = users.get_conversations(user_id)
-    return render_template("show_user.html", user=user, conversations_count=conversations_count, conversations=conversations, comments_count=comments_count, comments=comments)
+    return render_template("show_user.html", user=user,
+                           conversations_count=conversations_count,
+                           conversations=conversations,
+                           comments_count=comments_count, comments=comments)
 
 @app.route("/new_conversation")
 def new_conversation():
@@ -187,7 +199,10 @@ def create_conversation():
                 abort(403)
             classes.append((parts[0], parts[1]))
 
-    conversation_id = conversations.add_conversation(title, opening, user_id, classes, image)
+    conversation_id = conversations.add_conversation(title, opening,
+                                                     user_id,
+                                                     classes, image)
+    
     return redirect("/conversation/" + str(conversation_id))
 
 @app.route("/edit_conversation/<int:conversation_id>")
@@ -206,7 +221,9 @@ def edit_conversation(conversation_id):
     for entry in conversations.get_classes(conversation_id):
         classes[entry["title"]] = entry["value"]
 
-    return render_template("edit_conversation.html", conversation=conversation, classes=classes, all_classes=all_classes)
+    return render_template("edit_conversation.html",
+                           conversation=conversation,
+                           classes=classes, all_classes=all_classes)
 
 @app.route("/update_conversation", methods=["POST"])
 def update_conversation():
@@ -259,10 +276,12 @@ def update_conversation():
                 abort(403)
             classes.append((parts[0], parts[1]))
 
-    conversations.update_conversation(conversation_id, title, opening, classes, image)
+    conversations.update_conversation(conversation_id, title,
+                                      opening, classes, image)
     return redirect("/conversation/" + str(conversation_id))
 
-@app.route("/delete_conversation/<int:conversation_id>", methods=["GET", "POST"])
+@app.route("/delete_conversation/<int:conversation_id>",
+           methods=["GET", "POST"])
 def delete_conversation(conversation_id):
     require_login()
     conversation = conversations.get_conversation(conversation_id)
@@ -271,7 +290,8 @@ def delete_conversation(conversation_id):
     if conversation["user_id"] != session["user_id"]:
         abort(403)
     if request.method == "GET":
-        return render_template("delete_conversation.html", conversation=conversation)
+        return render_template("delete_conversation.html",
+                               conversation=conversation)
 
     if request.method == "POST":
         check_csrf()

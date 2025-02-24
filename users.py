@@ -6,7 +6,9 @@ def get_user(user_id):
     return result[0] if result else None
 
 def get_conversations(user_id):
-    sql = "SELECT id, title, modification_time FROM conversations WHERE user_id = ? ORDER BY id DESC LIMIT 50"
+    sql = """SELECT id, title, modification_time FROM conversations
+          WHERE user_id = ?
+          ORDER BY id DESC LIMIT 50"""
     result = db.query(sql, [user_id])
     if not result:
         result = ""
@@ -24,7 +26,8 @@ def user_count():
     return db.query(sql)[0][0]
 
 def find_users(search, page, page_size):
-    sql = "SELECT id, username FROM users WHERE username LIKE ? ORDER BY username LIMIT ? OFFSET ?"
+    sql = """SELECT id, username FROM users WHERE username LIKE ?
+          ORDER BY username LIMIT ? OFFSET ?"""
     limit = page_size
     offset = page_size * (page - 1)
     results = db.query(sql, [search, limit, offset])
@@ -34,7 +37,10 @@ def find_users(search, page, page_size):
     return results, user_count
 
 def get_comments(user_id):
-    sql = "SELECT id, conversation_id, comment, modification_time FROM comments WHERE user_id = ? ORDER BY id DESC LIMIT 50"
+    sql = """SELECT id, conversation_id, comment, modification_time
+          FROM comments
+          WHERE user_id = ?
+          ORDER BY id DESC LIMIT 50"""
     result = db.query(sql, [user_id])
 
     sql = "SELECT COUNT(*) FROM comments WHERE user_id = ? ORDER BY id DESC"
