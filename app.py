@@ -80,10 +80,8 @@ def find_conversation(page=1):
 
     results, conversation_count = conversations.find_conversations(search, my_classes,
                                                                    page, page_size)
-    print(conversation_count)
     page_count = math.ceil(conversation_count / page_size)
     page_count = max(page_count, 1)
-    print(page_count)
 
     if page < 1:
         return redirect("/find_conversation/1")
